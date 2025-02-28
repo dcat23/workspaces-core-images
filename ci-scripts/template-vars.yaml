@@ -395,9 +395,9 @@ multiImages:
       - src/alpine/xfce/.config/xfce4/xfconf/xfce-perchannel-xml/**
 singleImages:
   - name1: cuda
-    name2: focal
-    base: nvidia/cuda:11.6.2-cudnn8-devel-ubuntu20.04
-    bg: bg_focal.png
+    name2: jammy
+    base: nvidia/cuda:12.2.2-cudnn8-devel-ubuntu22.04
+    bg: bg_jammy.png
     distro: ubuntu
     dockerfile: dockerfile-kasm-core
     changeFiles:
