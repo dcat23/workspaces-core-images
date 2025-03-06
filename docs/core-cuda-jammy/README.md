@@ -6,4 +6,4 @@ This image is used by our open-source containerized [Machine Learning Desktop](h
 
 ![Screenshot][Image_Screenshot]
 
-[Image_Screenshot]: https://f.hubspotusercontent30.net/hubfs/5856039/dockerhub/image-screenshots/core-cuda-focal.png "Image Screenshot"
+[Image_Screenshot]: https://5856039.fs1.hubspotusercontent-na1.net/hubfs/5856039/dockerhub/image-screenshots/core-cuda-jammy.png "Image Screenshot"
