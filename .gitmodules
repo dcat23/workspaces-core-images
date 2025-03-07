@@ -1,4 +1,4 @@
 [submodule "kasm-desktop-kde"]
 	path = kasm-desktop-kde
-	branch = feature/KASM-6256_desktop_background
+	branch = develop
 	url = https://github.com/kasmtech/KasmOS-KDE-Desktop
