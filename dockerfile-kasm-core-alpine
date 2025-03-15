@@ -227,6 +227,8 @@ ENV AUDIO_PORT=4901 \
     VNC_VIEW_ONLY_PW=vncviewonlypassword \
     TZ=$TZ
 
+RUN apk update && apk add mesa-vulkan-intel vulkan-tools
+
 ### Ports and user
 EXPOSE $VNC_PORT \
        $NO_VNC_PORT \
