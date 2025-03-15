@@ -1,0 +1,1 @@
+docker run --rm -it -e VNC_PW=bushel9 -e KASM_ENABLE_ZINK=1 --device /dev/dri/card0:/dev/dri/card0:rwm --device=/dev/dri/renderD128:/dev/dri/renderD128:rwm --group-add=106 -p 443:6901 kasmweb/core-alpine-321:local bash
