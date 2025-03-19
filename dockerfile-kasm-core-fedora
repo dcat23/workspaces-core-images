@@ -234,8 +234,6 @@ ENV AUDIO_PORT=4901 \
     VNC_VIEW_ONLY_PW=vncviewonlypassword \
     TZ=$TZ
 
-RUN dnf install -y glx-utils
-
 ### Ports and user
 EXPOSE $VNC_PORT \
        $NO_VNC_PORT \

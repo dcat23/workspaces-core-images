@@ -15,7 +15,7 @@ prepare_rpm_repo_dependencies() {
 
 echo "Install KasmVNC server"
 cd /tmp
-BUILD_ARCH=$(uname -p)
+BUILD_ARCH=$(uname -m)
 UBUNTU_CODENAME=""
 COMMIT_ID="5ea11df3c02343f44533f7a44be3b97b9b9471fb"
 BRANCH="master" # just use 'release' for a release branch
@@ -209,6 +209,7 @@ elif [[ "${DISTRO}" == "alpine" ]] ; then
         xterm
     if [ "${BUILD_ARCH}" == "x86_64" ]; then
         apk add --no-cache xf86-video-intel
+        apk add --no-cache mesa-vulkan-intel
     fi
     curl -s "${BUILD_URL}" | tar xzvf - -C /
     ln -s /usr/local/share/kasmvnc /usr/share/kasmvnc
