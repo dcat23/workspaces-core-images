@@ -195,7 +195,7 @@ function start_kasmvnc (){
 function start_window_manager (){
 	echo -e "\n------------------ Xfce4 window manager startup------------------"
 	if [ "${START_XFCE4}" == "1" ] || [ "${START_DE}" == "xfce4-session" ]; then
-		if [ -n "$KASM_ENABLE_ZINK" ] && [ -n "$KASM_DRI_CARD" ] && [ -n "$KASM_DRI_RENDERD" ]; then
+		if [ -n "$KASM_ENABLE_ZINK" ] && [ -n "$KASM_EGL_CARD" ] && [ -n "$KASM_RENDERD" ]; then
 			echo "Starting XFCE with Zink"
 			LIBGL_KOPPER_DRI2=1 MESA_LOADER_DRIVER_OVERRIDE=zink GALLIUM_DRIVER=zink DISPLAY=:1 /usr/bin/startxfce4 --replace &
 		elif [ -f /opt/VirtualGL/bin/vglrun ] && [ ! -z "${KASM_EGL_CARD}" ] && [ ! -z "${KASM_RENDERD}" ] && [ -O "${KASM_RENDERD}" ] && [ -O "${KASM_EGL_CARD}" ] ; then
