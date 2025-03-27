@@ -307,20 +307,6 @@ multiImages:
       - src/ubuntu/virtualgl/**
       - src/parrotos6/**
   - name1: alpine
-    name2: 318
-    base: alpine:3.18
-    bg: bg_alpine.png
-    distro: alpine
-    dockerfile: dockerfile-kasm-core-alpine
-    changeFiles:
-      - dockerfile-kasm-core-alpine
-      - src/alpine/**
-      - src/alpine/xfce/**
-      - src/alpine/xfce/.config/**
-      - src/alpine/xfce/.config/xfce4/**
-      - src/alpine/xfce/.config/xfce4/xfconf/**
-      - src/alpine/xfce/.config/xfce4/xfconf/xfce-perchannel-xml/**
-  - name1: alpine
     name2: 319
     base: alpine:3.19
     bg: bg_alpine.png

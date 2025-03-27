@@ -120,12 +120,6 @@ elif [[ "${DISTRO}" == "alpine" ]] ; then
         else
             BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_alpine_319_${KASM_VER_NAME_PART}_aarch64.apk"
         fi
-    elif grep -q v3.18 /etc/os-release; then
-        if [[ "$(arch)" =~ ^x86_64$ ]] ; then
-            BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_alpine_318_${KASM_VER_NAME_PART}_x86_64.apk"
-        else
-            BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_alpine_318_${KASM_VER_NAME_PART}_aarch64.apk"
-        fi
     fi
 else
     UBUNTU_CODENAME=$(grep -Po -m 1 "(?<=_CODENAME=)\w+" /etc/os-release)
