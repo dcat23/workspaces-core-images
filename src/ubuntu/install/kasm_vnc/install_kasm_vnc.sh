@@ -17,8 +17,8 @@ echo "Install KasmVNC server"
 cd /tmp
 BUILD_ARCH=$(uname -p)
 UBUNTU_CODENAME=""
-COMMIT_ID="5ea11df3c02343f44533f7a44be3b97b9b9471fb"
-BRANCH="master" # just use 'release' for a release branch
+COMMIT_ID="e647af5e281735d1c7fc676ca089201aeae7130a"
+BRANCH="release" # just use 'release' for a release branch
 KASMVNC_VER="1.3.4"
 COMMIT_ID_SHORT=$(echo "${COMMIT_ID}" | cut -c1-6)
 
@@ -104,33 +104,21 @@ elif [[ "${DISTRO}" = @(debian|parrotos6) ]] ; then
 elif [[ "${DISTRO}" == "alpine" ]] ; then
     if grep -q v3.21 /etc/os-release; then
         if [[ "$(arch)" =~ ^x86_64$ ]] ; then
-            BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/output/alpine_321/kasmvnc.alpine_321_x86_64.tgz"
+            BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_alpine_321_${KASM_VER_NAME_PART}_x86_64.apk"
         else
-            BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/output/alpine_321/kasmvnc.alpine_321_aarch64.tgz"
+            BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_alpine_321_${KASM_VER_NAME_PART}_aarch64.apk"
         fi
     elif grep -q v3.20 /etc/os-release; then
         if [[ "$(arch)" =~ ^x86_64$ ]] ; then
-            BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/output/alpine_320/kasmvnc.alpine_320_x86_64.tgz"
+            BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_alpine_320_${KASM_VER_NAME_PART}_x86_64.apk"
         else
-            BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/output/alpine_320/kasmvnc.alpine_320_aarch64.tgz"
+            BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_alpine_320_${KASM_VER_NAME_PART}_aarch64.apk"
         fi
     elif grep -q v3.19 /etc/os-release; then
         if [[ "$(arch)" =~ ^x86_64$ ]] ; then
-            BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/output/alpine_319/kasmvnc.alpine_319_x86_64.tgz"
+            BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_alpine_319_${KASM_VER_NAME_PART}_x86_64.apk"
         else
-            BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/output/alpine_319/kasmvnc.alpine_319_aarch64.tgz"
-        fi
-    elif grep -q v3.18 /etc/os-release; then
-        if [[ "$(arch)" =~ ^x86_64$ ]] ; then
-            BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/output/alpine_318/kasmvnc.alpine_318_x86_64.tgz"
-        else
-            BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/output/alpine_318/kasmvnc.alpine_318_aarch64.tgz"
-        fi
-    else
-        if [[ "$(arch)" =~ ^x86_64$ ]] ; then
-            BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/output/alpine_317/kasmvnc.alpine_317_x86_64.tgz"
-        else
-            BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/output/alpine_317/kasmvnc.alpine_317_aarch64.tgz"
+            BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_alpine_319_${KASM_VER_NAME_PART}_aarch64.apk"
         fi
     fi
 else
@@ -210,10 +198,12 @@ elif [[ "${DISTRO}" == "alpine" ]] ; then
     if [ "${BUILD_ARCH}" == "x86_64" ]; then
         apk add --no-cache xf86-video-intel
     fi
-    curl -s "${BUILD_URL}" | tar xzvf - -C /
+    wget "${BUILD_URL}" -O kasmvncserver.apk
+    apk add --no-cache --allow-untrusted kasmvncserver.apk
     ln -s /usr/local/share/kasmvnc /usr/share/kasmvnc
     ln -s /usr/local/etc/kasmvnc /etc/kasmvnc
     ln -s /usr/local/lib/kasmvnc /usr/lib/kasmvncserver
+    rm -f kasmvncserver.apk
 else
     wget "${BUILD_URL}" -O kasmvncserver.deb
     apt-get update
