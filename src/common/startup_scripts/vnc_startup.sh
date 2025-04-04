@@ -195,7 +195,10 @@ function start_kasmvnc (){
 function start_window_manager (){
 	echo -e "\n------------------ Xfce4 window manager startup------------------"
 	if [ "${START_XFCE4}" == "1" ] || [ "${START_DE}" == "xfce4-session" ]; then
-		if [ -f /opt/VirtualGL/bin/vglrun ] && [ ! -z "${KASM_EGL_CARD}" ] && [ ! -z "${KASM_RENDERD}" ] && [ -O "${KASM_RENDERD}" ] && [ -O "${KASM_EGL_CARD}" ] ; then
+		if [ -n "$KASM_ENABLE_ZINK" ] && [ -n "$KASM_EGL_CARD" ] && [ -n "$KASM_RENDERD" ]; then
+			echo "Starting XFCE with Zink"
+			LIBGL_KOPPER_DRI2=1 MESA_LOADER_DRIVER_OVERRIDE=zink GALLIUM_DRIVER=zink DISPLAY=:1 /usr/bin/startxfce4 --replace &
+		elif [ -f /opt/VirtualGL/bin/vglrun ] && [ ! -z "${KASM_EGL_CARD}" ] && [ ! -z "${KASM_RENDERD}" ] && [ -O "${KASM_RENDERD}" ] && [ -O "${KASM_EGL_CARD}" ] ; then
 		echo "Starting XFCE with VirtualGL using EGL device ${KASM_EGL_CARD}"
 			DISPLAY=:1 /opt/VirtualGL/bin/vglrun -d "${KASM_EGL_CARD}" /usr/bin/startxfce4 --replace &
 		else
@@ -275,14 +278,14 @@ function start_pcm_audio (){
                 HOME=/var/run/pulse pulseaudio --start
             fi
                 /opt/audio/start kasmaudio 4901 ${HOME}/.vnc/self.pem ${HOME}/.vnc/self.pem "kasm_user:$VNC_PW" &
-  
+
                 KASM_PROCS['kasm_audio_server']=$!
-                
+
                 if [[ $DEBUG == true ]]; then
                   echo -e "\n------------------ Started Audio Server  ----------------------------"
                   echo "Kasm Audio Server PID: ${KASM_PROCS['kasm_audio_server']}";
                 fi
-        fi      
+        fi
 }
 
 function start_audio_in (){
