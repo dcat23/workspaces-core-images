@@ -88,7 +88,15 @@ elif [[ "${DISTRO}" == "fedora41" ]] ; then
         BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_fedora_fortyone_${KASM_VER_NAME_PART}_aarch64.rpm"
     fi
 elif [[ "${DISTRO}" = @(debian|parrotos6) ]] ; then
-    if $(grep -q bookworm /etc/os-release) || $(grep -q lory /etc/os-release); then
+    if $(grep -q trixie /etc/os-release); then
+        if [[ "$(arch)" =~ ^x86_64$ ]] ; then
+            # URL for testing purposes, will be replaced with the actual build URL once available
+            BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/45e75b1aac591e67b0f9d3b1a7ec5d255d1d89da/kasmvncserver_trixie_1.3.5_master_45e75b_amd64.deb"
+        else
+            # URL for testing purposes, will be replaced with the actual build URL once available
+            BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/45e75b1aac591e67b0f9d3b1a7ec5d255d1d89da/kasmvncserver_trixie_1.3.5_master_45e75b_arm64.deb"
+        fi
+    elif $(grep -q bookworm /etc/os-release) || $(grep -q lory /etc/os-release); then
         if [[ "$(arch)" =~ ^x86_64$ ]] ; then
             BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_bookworm_${KASM_VER_NAME_PART}_amd64.deb"
         else
