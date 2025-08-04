@@ -63,43 +63,57 @@ then
 fi
 
 if [ ! -z "$KASM_PROFILE_LDR" ]; then
-    CURRENT_SIZE=$(du -s $HOME | grep -Po '^\d+')
-    if [ -z ${KASM_PROFILE_FILTER} ]; then
-        KASM_PROFILE_FILTER=".vnc,.cache,Downloads,Uploads,.config/*/Singleton*"
-    fi
-
-    if [ ! -z "$KASM_PROFILE_SIZE_LIMIT" ]; then
-        SIZE_LIMIT_MB=$(echo "$KASM_PROFILE_SIZE_LIMIT / 1000" | bc)
-        if [[ $CURRENT_SIZE -gt KASM_PROFILE_SIZE_LIMIT ]]; then
-            http_proxy="" https_proxy="" curl -k "https://${KASM_API_HOST}:${KASM_API_PORT}/api/set_kasm_session_status?token=${KASM_API_JWT}" -H 'Content-Type: application/json' -d '{"destroyed": true}'
-            log 'Profile size limit exceeded.' 'WARNING'
-            exit 0
-        fi
-    fi
-    
-    if [ -z "$kasm_profile_sync_found" ]; then
-        log "Profile sync not available"
-    else
-        log "Packing and uploading user profile to object storage."
-        PROFILE_SYNC_STATUS=1
-        if [[ $DEBUG == true ]]; then
-            OUTPUT=$(http_proxy="" https_proxy="" /usr/bin/kasm-profile-sync --upload /home/kasm-user --insecure --filter "${KASM_PROFILE_FILTER}" --remote ${KASM_API_HOST} --port ${KASM_API_PORT} -c ${KASM_PROFILE_CHUNK_SIZE} --token ${KASM_API_JWT} --verbose 2>&1 )
-            PROFILE_SYNC_STATUS=$?
-        else
-            OUTPUT=$(http_proxy="" https_proxy="" /usr/bin/kasm-profile-sync --upload /home/kasm-user --insecure --filter "${KASM_PROFILE_FILTER}" --remote ${KASM_API_HOST} --port ${KASM_API_PORT} -c ${KASM_PROFILE_CHUNK_SIZE} --token ${KASM_API_JWT} 2>&1 )
-            PROFILE_SYNC_STATUS=$?
+    case "$KASM_PROFILE_LDR" in
+    0)
+        log 'Syncing profile up with v1 profilesync.'
+        CURRENT_SIZE=$(du -s $HOME | grep -Po '^\d+')
+        if [ -z ${KASM_PROFILE_FILTER} ]; then
+            KASM_PROFILE_FILTER=".vnc,.cache,Downloads,Uploads,.config/*/Singleton*"
         fi
 
-        while IFS= read -r line; do
-            log "$line"
-        done <<< "$OUTPUT"
+        if [ ! -z "$KASM_PROFILE_SIZE_LIMIT" ]; then
+            SIZE_LIMIT_MB=$(echo "$KASM_PROFILE_SIZE_LIMIT / 1000" | bc)
+            if [[ $CURRENT_SIZE -gt KASM_PROFILE_SIZE_LIMIT ]]; then
+                http_proxy="" https_proxy="" curl -k "https://${KASM_API_HOST}:${KASM_API_PORT}/api/set_kasm_session_status?token=${KASM_API_JWT}" -H 'Content-Type: application/json' -d '{"destroyed": true}'
+                log 'Profile size limit exceeded.' 'WARNING'
+                exit 0
+            fi
+        fi
 
-        if [ $PROFILE_SYNC_STATUS -ne 0 ]; then
-            log "Failed to syncronize user profile, see debug logs." "ERROR"
+        if [ -z "$kasm_profile_sync_found" ]; then
+            log "Profile sync not available"
         else
-            log "Profile upload complete."
-        fi        
-    fi
+            log "Packing and uploading user profile to object storage."
+            PROFILE_SYNC_STATUS=1
+            set +e
+            if [[ $DEBUG == true ]]; then
+               OUTPUT=$(http_proxy="" https_proxy="" /usr/bin/kasm-profile-sync --upload /home/kasm-user --insecure --filter "${KASM_PROFILE_FILTER}" --remote ${KASM_API_HOST} --port ${KASM_API_PORT} -c ${KASM_PROFILE_CHUNK_SIZE} --token ${KASM_API_JWT} --verbose 2>&1 )
+               PROFILE_SYNC_STATUS=$?
+            else
+               OUTPUT=$(http_proxy="" https_proxy="" /usr/bin/kasm-profile-sync --upload /home/kasm-user --insecure --filter "${KASM_PROFILE_FILTER}" --remote ${KASM_API_HOST} --port ${KASM_API_PORT} -c ${KASM_PROFILE_CHUNK_SIZE} --token ${KASM_API_JWT} 2>&1 )
+               PROFILE_SYNC_STATUS=$?
+            fi
+            set -e
+
+            while IFS= read -r line; do
+               log "$line"
+            done <<< "$OUTPUT"
+
+            if [ $PROFILE_SYNC_STATUS -ne 0 ]; then
+                log "Failed to syncronize user profile, see debug logs." "ERROR"
+            else
+                log "Profile upload complete."
+            fi  
+        fi
+    ;;
+    1|2)
+        echo "Profile sync v2 in use, no action on user shutdown script."
+    ;;
+    *)
+        log 'Unkown KASM_PROFILE_LDR setting'
+    ;;
+    esac
+
 fi
 
 echo "Done"
