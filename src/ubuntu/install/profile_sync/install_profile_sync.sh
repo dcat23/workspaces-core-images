@@ -104,7 +104,7 @@ check_distro_is_supported
 
 # profile-sync-v1
 BRANCH="release_1.1.0"
-COMMIT_ID="f02c9d4892538b26ec57d2c52f6505d3a6d38470"
+COMMIT_ID="9c2c59f08fab0824feef460454ef079c5f2dd21d"
 download_and_symlink
 
 # profile-sync-v2
