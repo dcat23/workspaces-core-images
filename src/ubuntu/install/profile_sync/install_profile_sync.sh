@@ -79,10 +79,6 @@ convert_local_distro_to_profile_sync_distro() {
 download_and_symlink() {
   COMMIT_ID_SHORT=$(echo "${COMMIT_ID}" | cut -c1-6)
   BINARY_NAME="${profile_distro}_${BRANCH}_${COMMIT_ID_SHORT}_${ARCH}-kasm-profile-sync"
-  # temporary workaround for trixie, must change later
-  if grep -q "trixie" /etc/os-release; then
-    BINARY_NAME="debian_bookworm_${BRANCH}_${COMMIT_ID_SHORT}_${ARCH}-kasm-profile-sync"
-  fi
   BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/profile-sync/${COMMIT_ID}/${BINARY_NAME}"
 
   cd /usr/bin/
