@@ -269,20 +269,6 @@ multiImages:
       - src/opensuse/xfce/.config/xfce4/xfconf/xfce-perchannel-xml/**
       - src/ubuntu/sysbox/**
   - name1: fedora
-    name2: 39
-    base: fedora:39
-    bg: bg_fedora.png
-    distro: fedora39
-    dockerfile: dockerfile-kasm-core-fedora
-    changeFiles:
-      - dockerfile-kasm-core-fedora
-      - src/fedora39/**
-      - src/fedora39/xfce/**
-      - src/fedora39/xfce/.config/**
-      - src/fedora39/xfce/.config/xfce4/**
-      - src/fedora39/xfce/.config/xfce4/xfconf/**
-      - src/fedora39/xfce/.config/xfce4/xfconf/xfce-perchannel-xml/**
-  - name1: fedora
     name2: 40
     base: fedora:40
     bg: bg_fedora.png

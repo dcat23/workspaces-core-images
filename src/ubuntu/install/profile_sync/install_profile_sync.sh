@@ -91,10 +91,27 @@ download_and_symlink() {
   ln -s "$BINARY_NAME" kasm-profile-sync
 }
 
-ARCH=$(arch)
-BRANCH="develop"
-COMMIT_ID="3eeb114bd9e640d1a56be70d3d6723b954765db2"
+download_and_symlink_v2() {
+  COMMIT_ID_SHORT=$(echo "${COMMIT_ID}" | cut -c1-6)
+  BINARY_NAME="${profile_distro}_${BRANCH}_${COMMIT_ID_SHORT}_${ARCH}-kasm-profile-sync-2"
+  BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/profile-sync/${COMMIT_ID}/${BINARY_NAME}"
 
+  cd /usr/bin/
+  wget "$BUILD_URL"
+  chmod +x "$BINARY_NAME"
+  ln -s "$BINARY_NAME" kasm-profile-sync-2
+}
+
+ARCH=$(arch)
 convert_local_distro_to_profile_sync_distro
 check_distro_is_supported
+
+# profile-sync-v1
+BRANCH="release_1.1.0"
+COMMIT_ID="f02c9d4892538b26ec57d2c52f6505d3a6d38470"
 download_and_symlink
+
+# profile-sync-v2
+BRANCH="release_2.0.0"
+COMMIT_ID="865c4a2c78edeeaad42fa8982437a4628916ec1a"
+download_and_symlink_v2

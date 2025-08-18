@@ -19,8 +19,8 @@ log () {
 
 no_proxy="localhost,127.0.0.1"
 
-if [ -f /usr/bin/kasm-profile-sync ]; then
-	kasm_profile_sync_found=1
+if [ -f /usr/bin/kasm-profile-sync ] && [ -f /usr/bin/kasm-profile-sync-2 ]; then
+    kasm_profile_sync_found=1
 fi
 
 # Set lang values
@@ -85,60 +85,105 @@ function pull_profile (){
 		fi
 
 		log "Downloading and unpacking user profile from object storage."
-		set +e
+	fi
+
+	# Check if KASM_PROFILE_LDR is set
+	if [ -z "$KASM_PROFILE_LDR" ]; then
+		log "KASM_PROFILE_LDR is not set."
+		return
+	fi
+
+	set +e
+
+	# Evaluate the value of KASM_PROFILE_LDR
+	PROCESS_SYNC_EXIT_CODE=1
+	case "$KASM_PROFILE_LDR" in
+	0|1)
+		log "KASM_PROFILE_LDR is set to $KASM_PROFILE_LDR: Running v1 S3 Persistent Profile Pull."
 		if [[ $DEBUG == true ]]; then
 			OUTPUT=$(http_proxy="" https_proxy="" /usr/bin/kasm-profile-sync --download /home/kasm-user --insecure --remote ${KASM_API_HOST} --port ${KASM_API_PORT} -c ${KASM_PROFILE_CHUNK_SIZE} --token ${KASM_API_JWT} --verbose 2>&1 )
 		else
 			OUTPUT=$(http_proxy="" https_proxy="" /usr/bin/kasm-profile-sync --download /home/kasm-user --insecure --remote ${KASM_API_HOST} --port ${KASM_API_PORT} -c ${KASM_PROFILE_CHUNK_SIZE} --token ${KASM_API_JWT} 2>&1 )
 		fi
-
+		PROCESS_SYNC_EXIT_CODE=$?
+        
 		# log output of profile sync
 		while IFS= read -r line; do
-            log "$line"
-        done <<< "$OUTPUT"
+			log "$line"
+		done <<< "$OUTPUT"
 
-		# exit and log a non-zero exit code
-		PROCESS_SYNC_EXIT_CODE=$?
-		set -e
-		if (( PROCESS_SYNC_EXIT_CODE > 1 )); then
-			log "Profile-sync failed with a non-recoverable error. See server side logs for more details." "ERROR"
-			exit 1
-		fi
-		log "Profile load complete."
 		# Update the status of the container to running
 		sleep 3
 		http_proxy="" https_proxy="" curl -k "https://${KASM_API_HOST}:${KASM_API_PORT}/api/set_kasm_session_status?token=${KASM_API_JWT}" -H 'Content-Type: application/json' -d '{"status": "running"}'
+		;;
+	2)
+		log "KASM_PROFILE_LDR is set to 2: Running v2 Storage Mapping Persistent Profile Pull."
+        http_proxy="" https_proxy="" /usr/bin/kasm-profile-sync-2 --action pull --ignore-ssl --report-status
+		PROCESS_SYNC_EXIT_CODE=$?
+		;;
+	*)
+		log "Unexpected value for KASM_PROFILE_LDR: $KASM_PROFILE_LDR"
+		;;
+	esac
 
-		# Reset the timer to prevent session recording monitor from exiting
-		SECONDS=0
+	set -e
+	if (( PROCESS_SYNC_EXIT_CODE > 1 )); then
+		log "Profile-sync failed with a non-recoverable error. See server side logs for more details." "ERROR"
+		exit 1
 	fi
+	log "Profile load complete."
+
+	# Reset the timer to prevent session recording monitor from exiting
+	SECONDS=0
 }
 
 function profile_size_check(){
-	if [ ! -z "$KASM_PROFILE_SIZE_LIMIT" ]
-	then
-		SIZE_CHECK_FAILED=false
-		while true
-		do
-			sleep 60
-			CURRENT_SIZE=$(du -s $HOME | grep -Po '^\d+')
-			SIZE_LIMIT_MB=$(echo "$KASM_PROFILE_SIZE_LIMIT / 1000" | bc)
-			if [[ $CURRENT_SIZE -gt KASM_PROFILE_SIZE_LIMIT ]]
-			then
-				notify-send "Profile Size Exceeds Limit" "Your home profile has exceeded the size limit of ${SIZE_LIMIT_MB}MB. Changes on your desktop will not be saved between sessions until you reduce the size of your profile." -i /usr/share/icons/ubuntu-mono-dark/apps/22/dropboxstatus-x.svg -t 57000
-				SIZE_CHECK_FAILED=true
-			else
-				if [ "$SIZE_CHECK_FAILED" = true ] ; then
-					SIZE_CHECK_FAILED=false
-					notify-send "Profile Size" "Your home profile size is now under the limit and will be saved when your session is terminated." -i /usr/share/icons/ubuntu-mono-dark/apps/22/dropboxstatus-logo.svg -t 57000
-				fi
-			fi
+    if [ -z "$KASM_PROFILE_LDR" ]; then
+        return
+    fi
 
-			if [ -f  /tmp/.kasm_container_shutdown_failure ]; then
-				notify-send "Profile Size" "Your profile failed to save. Contact your administrator for assistance." -i /usr/share/icons/ubuntu-mono-dark/apps/22/dropboxstatus-logo.svg -t 57000
-			fi
-		done
-	fi
+    if [[ "$KASM_PROFILE_LDR" == "1" || "$KASM_PROFILE_LDR" == "2" ]]; then
+        while true; do
+            sleep 60
+			set +e
+            OUTPUT=$(http_proxy="" https_proxy="" /usr/bin/kasm-profile-sync-2 --action status --ignore-ssl)
+            STATUS=$?
+			set -e
+
+            if [ "$STATUS" -eq 1 ]; then
+                LIMIT_MB=$(echo "$OUTPUT" | tail -n1 | grep -Po '\(\K[0-9, ]+(?= MB\))')
+                notify-send "Profile Size Warning" "Your profile is nearing its size limit of ${LIMIT_MB}MB. Please consider cleaning up to avoid data loss." -i /usr/share/icons/ubuntu-mono-dark/apps/22/dropboxstatus-x.svg -t 57000
+            elif [ "$STATUS" -eq 2 ]; then
+                notify-send "Profile Size Exceeds Limit" "Your profile has exceeded its size limit. Changes will not be saved until the size is reduced." -i /usr/share/icons/ubuntu-mono-dark/apps/22/dropboxstatus-x.svg -t 57000
+            fi
+
+            if [ -f /tmp/.kasm_container_shutdown_failure ]; then
+                notify-send "Profile Size" "Your profile failed to save. Contact your administrator for assistance." -i /usr/share/icons/ubuntu-mono-dark/apps/22/dropboxstatus-logo.svg -t 57000
+            fi
+        done
+    else
+        if [ ! -z "$KASM_PROFILE_SIZE_LIMIT" ]; then
+            SIZE_CHECK_FAILED=false
+            while true; do
+                sleep 60
+                CURRENT_SIZE=$(du -s $HOME | grep -Po '^\d+')
+                SIZE_LIMIT_MB=$(echo "$KASM_PROFILE_SIZE_LIMIT / 1000" | bc)
+                if [[ $CURRENT_SIZE -gt $KASM_PROFILE_SIZE_LIMIT ]]; then
+                    notify-send "Profile Size Exceeds Limit" "Your home profile has exceeded the size limit of ${SIZE_LIMIT_MB}MB. Changes on your desktop will not be saved between sessions until you reduce the size of your profile." -i /usr/share/icons/ubuntu-mono-dark/apps/22/dropboxstatus-x.svg -t 57000
+                    SIZE_CHECK_FAILED=true
+                else
+                    if [ "$SIZE_CHECK_FAILED" = true ]; then
+                        SIZE_CHECK_FAILED=false
+                        notify-send "Profile Size" "Your home profile size is now under the limit and will be saved when your session is terminated." -i /usr/share/icons/ubuntu-mono-dark/apps/22/dropboxstatus-logo.svg -t 57000
+                    fi
+                fi
+
+                if [ -f /tmp/.kasm_container_shutdown_failure ]; then
+                    notify-send "Profile Size" "Your profile failed to save. Contact your administrator for assistance." -i /usr/share/icons/ubuntu-mono-dark/apps/22/dropboxstatus-logo.svg -t 57000
+                fi
+            done
+        fi
+    fi
 }
 
 ## correct forwarding of shutdown signal
@@ -465,7 +510,7 @@ function wait_for_egress_signal() {
 
 function wait_for_network_devices() {
 	while true; do
-		interfaces=$(ip link show type veth | awk -F: '/^[0-9]+: / {print $2}' | awk '{print $1}' | sed 's/@.*//')
+		interfaces=$(ip -o link show | awk '!/lo:/ && !/tun/' | awk -F: '/^[0-9]+: / {print $2}' | awk '{print $1}' | sed 's/@.*//')
 		if [ -z "$interfaces" ]; then
 			sleep 1
 			continue
