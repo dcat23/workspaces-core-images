@@ -109,5 +109,5 @@ download_and_symlink
 
 # profile-sync-v2
 BRANCH="release_2.0.0"
-COMMIT_ID="57fcd69d2e419805e88658a638f589c0333d3b96"
+COMMIT_ID="299a7ead1350e4ddd8e3b59a1186a8dc11673a05"
 download_and_symlink_v2
