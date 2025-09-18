@@ -129,6 +129,10 @@ RUN rm -rf "$INST_SCRIPTS/resources/"
 RUN chmod +x /etc/squid/kasm_squid_adapter
 RUN chmod +x /etc/squid/start_squid.sh && chmod 4755 /etc/squid/start_squid.sh
 
+### Install Smartcard Service
+COPY ./src/ubuntu/install/smartcard $INST_SCRIPTS/smartcard/
+RUN bash $INST_SCRIPTS/smartcard/install_smartcard.sh && rm -rf $INST_SCRIPTS/smartcard/
+
 ### configure startup
 COPY ./src/common/scripts/kasm_hook_scripts $STARTUPDIR
 COPY ./src/common/startup_scripts $STARTUPDIR
@@ -186,13 +190,16 @@ RUN touch $STARTUPDIR/wm.log \
     && chmod 755 $STARTUPDIR/webcam/kasm_webcam_server \
     && chmod 755 $STARTUPDIR/generate_container_user \
     && chmod 755 $STARTUPDIR/printer/kasm_printer_service \
+    && chmod 755 $STARTUPDIR/smartcard/kasm_smartcard_bridge \
     && chmod 755 $STARTUPDIR/recorder/kasm_recorder_service \
     && chmod +x $STARTUPDIR/jsmpeg/kasm_audio_out-linux \
     && rm -rf $STARTUPDIR/install \
     && mkdir -p $STARTUPDIR/kasmrx/Downloads \
     && chown 1000:1000 $STARTUPDIR/kasmrx/Downloads \
     && chown -R root:root /usr/local/bin \
-    && chown 1000:root /var/run/pulse
+    && chown 1000:root /var/run/pulse \
+    && mkdir -p /run/pcscd \
+    && chown 1000:1000 /run/pcscd
 
 ### Cleanup job
 COPY ./src/ubuntu/install/cleanup $INST_SCRIPTS/cleanup/

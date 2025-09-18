@@ -16,6 +16,7 @@ files: &UNIVERSAL_CHANGE_FILES
   - src/ubuntu/install/maximize_script/**
   - src/ubuntu/install/package_rules/**
   - src/ubuntu/install/printer/**
+  - src/ubuntu/install/smartcard/**
   - src/ubuntu/install/profile_sync/**
   - src/ubuntu/install/squid/**
   - src/ubuntu/install/squid/install/**

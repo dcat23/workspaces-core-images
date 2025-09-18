@@ -213,6 +213,10 @@ function start_kasmvnc (){
 		VNCOPTIONS="$VNCOPTIONS -UnixRelay printer:/tmp/printer"
 	fi
 
+	if [[ ${KASM_SVC_SMARTCARD:-1} == 1 ]]; then
+		VNCOPTIONS="$VNCOPTIONS -UnixRelay smartcard:/tmp/smartcard"
+	fi
+
 	if [[ "${BUILD_ARCH}" =~ ^aarch64$ ]] && [[ -f /lib/aarch64-linux-gnu/libgcc_s.so.1 ]] ; then
 		LD_PRELOAD=/lib/aarch64-linux-gnu/libgcc_s.so.1 vncserver $DISPLAY $KASMVNC_HW3D -drinode $DRINODE -depth $VNC_COL_DEPTH -geometry $VNC_RESOLUTION -websocketPort $NO_VNC_PORT -httpd ${KASM_VNC_PATH}/www -sslOnly -FrameRate=$MAX_FRAME_RATE -interface 0.0.0.0 -BlacklistThreshold=0 -FreeKeyMappings $VNCOPTIONS $KASM_SVC_SEND_CUT_TEXT $KASM_SVC_ACCEPT_CUT_TEXT
 	else
@@ -420,6 +424,50 @@ function wait_on_printer (){
     fi
 }
 
+function start_pcscd (){
+	if [[ ${KASM_SVC_SMARTCARD:-1} == 1 ]]; then
+		log 'Starting pcscd'
+		if [[ $DEBUG == true ]]; then
+			pcscd --foreground --apdu --debug &
+		else
+			pcscd --foreground --apdu &
+		fi
+
+		KASM_PROCS['pcscd']=$!
+
+		if [[ $DEBUG == true ]]; then
+			echo -e "\n------------------ Started PC/SC daemon  ----------------------------"
+			echo "PC/SC daemon PID: ${KASM_PROCS['pcscd']}";
+		fi
+	fi
+}
+
+function start_smartcard (){
+	if [[ ${KASM_SVC_SMARTCARD:-1} == 1 ]]; then
+		log 'Starting smartcard service'
+
+		if [[ $DEBUG == true ]]; then
+				$STARTUPDIR/smartcard/kasm_smartcard_bridge --debug &
+		else
+				$STARTUPDIR/smartcard/kasm_smartcard_bridge &
+		fi
+
+		KASM_PROCS['kasm_smartcard']=$!
+
+		if [[ $DEBUG == true ]]; then
+			echo -e "\n------------------ Started Smartcard Service  ----------------------------"
+			echo "Kasm Smartcard PID: ${KASM_PROCS['kasm_smartcard']}";
+		fi
+	fi
+}
+
+function wait_on_smartcard (){
+	if [[ ${KASM_SVC_SMARTCARD:-1} == 1 && ${KASM_SMARTCARD_WAIT:-0} == 1 ]]; then
+		log 'Waiting on smartcard service to be ready'
+		/usr/bin/smartcard_ready
+		log 'Smartcard is ready'
+	fi
+}
 
 function custom_startup (){
 	custom_startup_script=/dockerstartup/custom_startup.sh
@@ -588,6 +636,7 @@ chmod 600 $PASSWD_PATH
 
 # start processes
 wait_on_printer
+wait_on_smartcard
 start_kasmvnc
 start_window_manager
 if [ -z ${PCM_AUDIO+x} ]; then
@@ -602,6 +651,8 @@ start_gamepad
 profile_size_check &
 start_webcam
 start_printer
+start_pcscd
+start_smartcard
 
 STARTUP_COMPLETE=1
 
@@ -689,6 +740,14 @@ do
 					echo "Printer Service Failed"
 					# TODO: Needs work in python project to support auto restart
 					start_printer
+					;;
+				pcscd)
+					echo "PC/SC daemon Failed"
+					start_pcscd
+					;;
+				kasm_smartcard)
+					echo "Smartcard Service Failed"
+					start_smartcard
 					;;
 				custom_script)
 					echo "The custom startup script exited."
