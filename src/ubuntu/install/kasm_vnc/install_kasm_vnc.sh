@@ -12,13 +12,13 @@ prepare_rpm_repo_dependencies() {
     dnf install -y oracle-epel-release-el9
   fi
 }
-# https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/32262057375e343726617c0af5c083cac062b2f9/kasmvncserver_bullseye__feature_VNC-275_server_idle_timeout_322620_amd64.deb
+
 echo "Install KasmVNC server"
 cd /tmp
 BUILD_ARCH=$(uname -m)
 UBUNTU_CODENAME=""
-COMMIT_ID="32262057375e343726617c0af5c083cac062b2f9"
-BRANCH="feature_VNC-275_server_idle_timeout" # just use 'release' for a release branch
+COMMIT_ID="327ed36cb85ab0086416f6449f721dffacaa3399"
+BRANCH="master" # just use 'release' for a release branch
 KASMVNC_VER=""
 COMMIT_ID_SHORT=$(echo "${COMMIT_ID}" | cut -c1-6)
 
