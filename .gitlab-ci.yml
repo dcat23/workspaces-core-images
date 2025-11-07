@@ -8,6 +8,9 @@ services:
 include:
   - template: Code-Quality.gitlab-ci.yml
 
+default:
+  retry: 2
+
 stages:
   - template
   - run
