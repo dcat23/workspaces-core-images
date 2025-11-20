@@ -17,7 +17,7 @@ echo "Install KasmVNC server"
 cd /tmp
 BUILD_ARCH=$(uname -m)
 UBUNTU_CODENAME=""
-COMMIT_ID="8859c046e072906dcd59ab419ee19473c7dafb68"
+COMMIT_ID="0afdebe34951bfb6eb3d99f9c3d4331858e09e03"
 BRANCH="feature_VNC-8-file-upload-standalone" # just use 'release' for a release branch
 KASMVNC_VER="1.4.1"
 COMMIT_ID_SHORT=$(echo "${COMMIT_ID}" | cut -c1-6)
