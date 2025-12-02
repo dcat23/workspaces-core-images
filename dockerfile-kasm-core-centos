@@ -189,6 +189,8 @@ COPY --from=base_layer / /
 ### Labels
 LABEL "org.opencontainers.image.authors"='Kasm Tech "info@kasmweb.com"'
 LABEL "com.kasmweb.image"="true"
+LABEL "kasm.port_map.uploads"="6901"
+
 
 ### Environment config
 ARG DISTRO=centos
