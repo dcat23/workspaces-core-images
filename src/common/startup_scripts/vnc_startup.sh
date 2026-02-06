@@ -247,7 +247,7 @@ function start_window_manager (){
 		if [ -n "$KASM_ENABLE_ZINK" ] && [ -n "$KASM_EGL_CARD" ] && [ -n "$KASM_RENDERD" ]; then
 			echo "Starting XFCE with Zink"
 			LIBGL_KOPPER_DRI2=1 MESA_LOADER_DRIVER_OVERRIDE=zink GALLIUM_DRIVER=zink DISPLAY=:1 /usr/bin/startxfce4 --replace &
-		elif [ -f /opt/VirtualGL/bin/vglrun ] && [ ! -z "${KASM_EGL_CARD}" ] && [ ! -z "${KASM_RENDERD}" ] && [ -O "${KASM_RENDERD}" ] && [ -O "${KASM_EGL_CARD}" ] ; then
+		elif [ -f /opt/VirtualGL/bin/vglrun ] && [ ! -z "${KASM_EGL_CARD}" ] && [ ! -z "${KASM_RENDERD}" ] && [ -w "${KASM_RENDERD}" ] && [ -w "${KASM_EGL_CARD}" ] ; then
 		echo "Starting XFCE with VirtualGL using EGL device ${KASM_EGL_CARD}"
 			DISPLAY=:1 /opt/VirtualGL/bin/vglrun -d "${KASM_EGL_CARD}" /usr/bin/startxfce4 --replace &
 		else
@@ -267,7 +267,7 @@ function start_window_manager (){
         fi
         echo -e "\n------------------ KDE window manager startup------------------"
         if [ "${START_DE}" == "kde5" ] ; then
-                if [ -f /opt/VirtualGL/bin/vglrun ] && [ ! -z "${KASM_EGL_CARD}" ] && [ ! -z "${KASM_RENDERD}" ] && [ -O "${KASM_RENDERD}" ] && [ -O "${KASM_EGL_CARD}" ] ; then
+                if [ -f /opt/VirtualGL/bin/vglrun ] && [ ! -z "${KASM_EGL_CARD}" ] && [ ! -z "${KASM_RENDERD}" ] && [ -w "${KASM_RENDERD}" ] && [ -w "${KASM_EGL_CARD}" ] ; then
                 echo "Starting KDE with VirtualGL using EGL device ${KASM_EGL_CARD}"
                         DISPLAY=:1 /opt/VirtualGL/bin/vglrun -d "${KASM_EGL_CARD}" /usr/bin/startplasma-x11 &
                 else
