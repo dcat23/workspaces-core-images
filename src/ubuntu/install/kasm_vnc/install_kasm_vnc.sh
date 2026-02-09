@@ -19,7 +19,7 @@ BUILD_ARCH=$(uname -m)
 UBUNTU_CODENAME=""
 COMMIT_ID="e170785a471811b32e363383333726e5ae1b2f8c"
 BRANCH="master" # just use 'release' for a release branch
-KASMVNC_VER="1.4.1"
+KASMVNC_VER=""
 COMMIT_ID_SHORT=$(echo "${COMMIT_ID}" | cut -c1-6)
 
 # Naming scheme is now different between an official release and feature branch
