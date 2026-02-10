@@ -17,7 +17,7 @@ echo "Install KasmVNC server"
 cd /tmp
 BUILD_ARCH=$(uname -m)
 UBUNTU_CODENAME=""
-COMMIT_ID="e3e61bdbb3233dbba6f128c2e6db15b6de3aaac0"
+COMMIT_ID="e170785a471811b32e363383333726e5ae1b2f8c"
 BRANCH="master" # just use 'release' for a release branch
 KASMVNC_VER="1.4.1"
 COMMIT_ID_SHORT=$(echo "${COMMIT_ID}" | cut -c1-6)
@@ -77,15 +77,15 @@ elif [[ "${DISTRO}" == "fedora39" ]] ; then
     fi
 elif [[ "${DISTRO}" == "fedora40" ]] ; then
     if [[ "$(arch)" =~ ^x86_64$ ]] ; then
-        BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_fedora_forty_${KASM_VER_NAME_PART}_x86_64.rpm"
+        BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_fedora_40_${KASM_VER_NAME_PART}_x86_64.rpm"
     else
-        BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_fedora_forty_${KASM_VER_NAME_PART}_aarch64.rpm"
+        BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_fedora_40_${KASM_VER_NAME_PART}_aarch64.rpm"
     fi
 elif [[ "${DISTRO}" == "fedora41" ]] ; then
     if [[ "$(arch)" =~ ^x86_64$ ]] ; then
-        BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_fedora_fortyone_${KASM_VER_NAME_PART}_x86_64.rpm"
+        BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_fedora_41_${KASM_VER_NAME_PART}_x86_64.rpm"
     else
-        BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_fedora_fortyone_${KASM_VER_NAME_PART}_aarch64.rpm"
+        BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_fedora_41_${KASM_VER_NAME_PART}_aarch64.rpm"
     fi
 elif [[ "${DISTRO}" == "fedora42" ]] ; then
     if [[ "$(arch)" =~ ^x86_64$ ]] ; then

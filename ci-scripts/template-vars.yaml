@@ -256,7 +256,7 @@ multiImages:
       - src/ubuntu/sysbox/**
   - name1: opensuse
     name2: 15
-    base: opensuse/leap:15.5
+    base: opensuse/leap:15.6
     bg: bg_opensuse.png
     distro: opensuse
     dockerfile: dockerfile-kasm-core-suse
