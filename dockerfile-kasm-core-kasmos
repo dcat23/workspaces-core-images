@@ -192,7 +192,7 @@ LABEL "com.kasmweb.image"="true"
 LABEL "com.kasmweb.gpu_acceleration_egl"="nvidia"
 ### Adding label to let Kasm Backend know the port upload request should be sent to
 ### See Kasm-7989 for details
-LABEL "kasm.port_map.uploads"="6901/tcp/https/basic"
+#LABEL "kasm.port_map.uploads"="6901/tcp/https/basic"
 ### End of change for Kasm-7987
 
 ### Environment config
