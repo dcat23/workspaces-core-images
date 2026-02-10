@@ -81,10 +81,6 @@ download_and_symlink() {
   BINARY_NAME="${profile_distro}_${BRANCH}_${COMMIT_ID_SHORT}_${ARCH}-kasm-profile-sync"
   BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/profile-sync/${COMMIT_ID}/${BINARY_NAME}"
 
-  # Temporary for Fedora 42 and 43 - use Fedora 41 build url
-  BUILD_URL=$(echo "$BUILD_URL" | sed -e 's/fedora_42/fedora_41/' -e 's/fedora_43/fedora_41/')
-  BINARY_NAME=$(echo "$BINARY_NAME" | sed -e 's/fedora_42/fedora_41/' -e 's/fedora_43/fedora_41/')
-
   cd /usr/bin/
   wget "$BUILD_URL"
   chmod +x "$BINARY_NAME"
@@ -95,10 +91,6 @@ download_and_symlink_v2() {
   COMMIT_ID_SHORT=$(echo "${COMMIT_ID}" | cut -c1-6)
   BINARY_NAME="${profile_distro}_${BRANCH}_${COMMIT_ID_SHORT}_${ARCH}-kasm-profile-sync-2"
   BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/profile-sync/${COMMIT_ID}/${BINARY_NAME}"
-
-  # Temporary for Fedora 42 and 43 - use Fedora 41 build url
-  BUILD_URL=$(echo "$BUILD_URL" | sed -e 's/fedora_42/fedora_41/' -e 's/fedora_43/fedora_41/')
-  BINARY_NAME=$(echo "$BINARY_NAME" | sed -e 's/fedora_42/fedora_41/' -e 's/fedora_43/fedora_41/')
 
   cd /usr/bin/
   wget "$BUILD_URL"
@@ -125,12 +117,12 @@ convert_local_distro_to_profile_sync_distro
 check_distro_is_supported
 
 # profile-sync-v1
-BRANCH="release_1.1.0"
-COMMIT_ID="9c2c59f08fab0824feef460454ef079c5f2dd21d"
+BRANCH="release_1.1.1"
+COMMIT_ID="2884ed90a638f59b53a01d8f194aa32381497b8e"
 download_and_symlink
 
 # profile-sync-v2
-BRANCH="release_2.0.0"
-COMMIT_ID="299a7ead1350e4ddd8e3b59a1186a8dc11673a05"
+BRANCH="release_2.1.0"
+COMMIT_ID="a67085e5c6095d373d682fc9901ccdd6b70ffd8c"
 install_v2_dependencies
 download_and_symlink_v2
