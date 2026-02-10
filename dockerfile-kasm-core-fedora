@@ -46,7 +46,7 @@ RUN mkdir -p $HOME/Desktop
 ### package would be missing. With skip_missing_names_on_install, yum will exit
 ### with 1 exit code and that will stop image building.
 RUN dnf install -y 'dnf-command(config-manager)' && \
-		if [ "${DISTRO}" == "fedora41" ]; then \
+		if [[ "${DISTRO}" == @(fedora41|fedora42|fedora43) ]]; then \
 				dnf-3 config-manager --setopt=skip_missing_names_on_install=False --save; \
 		else \
 				dnf config-manager --setopt=skip_missing_names_on_install=False --save; \
