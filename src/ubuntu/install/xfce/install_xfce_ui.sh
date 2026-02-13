@@ -30,7 +30,7 @@ EOL
 }
 
 echo "Install Xfce4 UI components"
-if [[ "${DISTRO}" != @(centos|oracle7|oracle8|opensuse|fedora37|fedora38|fedora39|fedora40|fedora41|oracle9|rhel9|rockylinux9|rockylinux8|almalinux8|almalinux9|alpine) ]]; then
+if [[ "${DISTRO}" != @(centos|oracle7|oracle8|opensuse|fedora37|fedora38|fedora39|fedora40|fedora41|fedora42|fedora43|oracle9|rhel9|rockylinux9|rockylinux8|almalinux8|almalinux9|alpine) ]]; then
   apt-get update
 fi
 
@@ -173,7 +173,7 @@ elif [ "$DISTRO" = "opensuse" ]; then
     xset
   # Pidof is no longer shipped in OpenSuse
   ln -s /usr/bin/pgrep /usr/bin/pidof
-elif [[ "$DISTRO" = @(fedora37|fedora38|fedora39|fedora40|fedora41) ]]; then
+elif [[ "$DISTRO" = @(fedora37|fedora38|fedora39|fedora40|fedora41|fedora42|fedora43) ]]; then
   dnf install -y \
     dbus-tools \
     dbus-x11 \
@@ -230,7 +230,7 @@ Exec=/usr/lib/xfce4/notifyd/xfce4-notifyd
 EOL
 fi
 
-if [[ "${DISTRO}" != @(centos|oracle7|oracle8|fedora37|fedora38|fedora39|fedora40|fedora41|oracle9|rhel9|rockylinux9|rockylinux8|almalinux8|almalinux9|alpine) ]]; then
+if [[ "${DISTRO}" != @(centos|oracle7|oracle8|fedora37|fedora38|fedora39|fedora40|fedora41|fedora42|fedora43|oracle9|rhel9|rockylinux9|rockylinux8|almalinux8|almalinux9|alpine) ]]; then
   replace_default_xinit
   if [ "${START_XFCE4}" == "1" ] ; then
     replace_default_99x11_common_start

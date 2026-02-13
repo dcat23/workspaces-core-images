@@ -270,33 +270,33 @@ multiImages:
       - src/opensuse/xfce/.config/xfce4/xfconf/xfce-perchannel-xml/**
       - src/ubuntu/sysbox/**
   - name1: fedora
-    name2: 40
-    base: fedora:40
+    name2: 42
+    base: fedora:42
     bg: bg_fedora.png
-    distro: fedora40
+    distro: fedora42
     dockerfile: dockerfile-kasm-core-fedora
     changeFiles:
       - dockerfile-kasm-core-fedora
-      - src/fedora40/**
-      - src/fedora40/xfce/**
+      - src/fedora42/**
+      - src/fedora42/xfce/**
       - src/fedora40/xfce/.config/**
       - src/fedora40/xfce/.config/xfce4/**
       - src/fedora40/xfce/.config/xfce4/xfconf/**
       - src/fedora40/xfce/.config/xfce4/xfconf/xfce-perchannel-xml/**
   - name1: fedora
-    name2: 41
-    base: fedora:41
+    name2: 43
+    base: fedora:43
     bg: bg_fedora.png
-    distro: fedora41
+    distro: fedora43
     dockerfile: dockerfile-kasm-core-fedora
     changeFiles:
       - dockerfile-kasm-core-fedora
-      - src/fedora41/**
-      - src/fedora41/xfce/**
-      - src/fedora41/xfce/.config/**
-      - src/fedora41/xfce/.config/xfce4/**
-      - src/fedora41/xfce/.config/xfce4/xfconf/**
-      - src/fedora41/xfce/.config/xfce4/xfconf/xfce-perchannel-xml/**
+      - src/fedora43/**
+      - src/fedora43/xfce/**
+      - src/fedora43/xfce/.config/**
+      - src/fedora43/xfce/.config/xfce4/**
+      - src/fedora43/xfce/.config/xfce4/xfconf/**
+      - src/fedora43/xfce/.config/xfce4/xfconf/xfce-perchannel-xml/**
   - name1: parrotos
     name2: 6
     base: parrotsec/core:6

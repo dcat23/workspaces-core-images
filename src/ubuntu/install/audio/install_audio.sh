@@ -48,6 +48,14 @@ elif [ "${DISTRO}" == "fedora41" ]; then
   dnf install -y curl git
   dnf-3 localinstall -y --nogpgcheck https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-41.noarch.rpm
   dnf install -y --allowerasing ffmpeg pulseaudio pulseaudio-utils
+elif [ "${DISTRO}" == "fedora42" ]; then
+  dnf install -y curl git
+  dnf-3 localinstall -y --nogpgcheck https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-42.noarch.rpm
+  dnf install -y --allowerasing ffmpeg pulseaudio pulseaudio-utils
+elif [ "${DISTRO}" == "fedora43" ]; then
+  dnf install -y curl git
+  dnf-3 localinstall -y --nogpgcheck https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-43.noarch.rpm
+  dnf install -y --allowerasing ffmpeg pulseaudio pulseaudio-utils
 elif [ "${DISTRO}" == "opensuse" ]; then
   zypper install -ny curl git
   zypper install -yn ffmpeg pulseaudio-utils

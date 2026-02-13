@@ -87,6 +87,18 @@ elif [[ "${DISTRO}" == "fedora41" ]] ; then
     else
         BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_fedora_41_${KASM_VER_NAME_PART}_aarch64.rpm"
     fi
+elif [[ "${DISTRO}" == "fedora42" ]] ; then
+    if [[ "$(arch)" =~ ^x86_64$ ]] ; then
+        BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_fedora_42_${KASM_VER_NAME_PART}_x86_64.rpm"
+    else
+        BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_fedora_42_${KASM_VER_NAME_PART}_aarch64.rpm"
+    fi
+elif [[ "${DISTRO}" == "fedora43" ]] ; then
+    if [[ "$(arch)" =~ ^x86_64$ ]] ; then
+        BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_fedora_43_${KASM_VER_NAME_PART}_x86_64.rpm"
+    else
+        BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_fedora_43_${KASM_VER_NAME_PART}_aarch64.rpm"
+    fi
 elif [[ "${DISTRO}" = @(debian|parrotos6) ]] ; then
     if $(grep -q trixie /etc/os-release); then
         if [[ "$(arch)" =~ ^x86_64$ ]] ; then
@@ -147,16 +159,16 @@ elif [[ "${DISTRO}" == @(oracle8|oracle9|rhel9|rockylinux9|rockylinux8|almalinux
     dnf localinstall -y kasmvncserver.rpm
     dnf install -y mesa-dri-drivers
     rm kasmvncserver.rpm
-elif [[ "${DISTRO}" == @(fedora37|fedora38|fedora39|fedora40|fedora41) ]] ; then
+elif [[ "${DISTRO}" == @(fedora37|fedora38|fedora39|fedora40|fedora41|fedora42|fedora43) ]] ; then
     dnf install -y xorg-x11-drv-amdgpu xorg-x11-drv-ati
     if [ "${BUILD_ARCH}" == "x86_64" ]; then
         dnf install -y xorg-x11-drv-intel
     fi
     wget "${BUILD_URL}" -O kasmvncserver.rpm
-    if [[ "${DISTRO}" == "fedora41" ]] ; then
+    if [[ "${DISTRO}" == @(fedora41|fedora42|fedora43) ]] ; then
         dnf-3 localinstall -y --allowerasing kasmvncserver.rpm
-        dnf install -y update-crypto-policies
-        update-crypto-policies --set FEDORA40
+        dnf install -y crypto-policies-scripts
+        update-crypto-policies --set DEFAULT:SHA1
     else
         dnf localinstall -y --allowerasing kasmvncserver.rpm
     fi
