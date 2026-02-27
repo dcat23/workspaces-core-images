@@ -10,12 +10,12 @@ prepare_rpm_repo_dependencies() {
     dnf install -y oracle-epel-release-el9
   fi
 }
-# https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/1a2b191eb369ed40c8bed8371debe9a7471a76cc/kasmvncserver_fedora_42_1.4.1_feature_VNC-151-investigate-tiger-vnc-h-264-encode-decoder2-color-conversion_1a2b19_aarch64.rpm
+# https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/ec0ecea9717d9e746063192cdc4a518df9dd1a7b/kasmvncserver_bookworm_1.4.1_feature_VNC-151-investigate-tiger-vnc-h-264-encode-decoder2-color-conversion_ec0ece_amd64.deb
 echo "Install KasmVNC server"
 cd /tmp
 BUILD_ARCH=$(uname -m)
 UBUNTU_CODENAME=""
-COMMIT_ID="1a2b191eb369ed40c8bed8371debe9a7471a76cc"
+COMMIT_ID="ec0ecea9717d9e746063192cdc4a518df9dd1a7b"
 BRANCH="feature_VNC-151-investigate-tiger-vnc-h-264-encode-decoder2-color-conversion" # just use 'release' for a release branch
 KASMVNC_VER="1.4.1"
 COMMIT_ID_SHORT=$(echo "${COMMIT_ID}" | cut -c1-6)
