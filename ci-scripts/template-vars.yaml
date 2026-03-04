@@ -269,6 +269,21 @@ multiImages:
       - src/opensuse/xfce/.config/xfce4/xfconf/**
       - src/opensuse/xfce/.config/xfce4/xfconf/xfce-perchannel-xml/**
       - src/ubuntu/sysbox/**
+  - name1: opensuse
+    name2: 16
+    base: opensuse/leap:16.0
+    bg: bg_opensuse.png
+    distro: opensuse
+    dockerfile: dockerfile-kasm-core-suse
+    changeFiles:
+      - dockerfile-kasm-core-suse
+      - src/opensuse/**
+      - src/opensuse/xfce/**
+      - src/opensuse/xfce/.config/**
+      - src/opensuse/xfce/.config/xfce4/**
+      - src/opensuse/xfce/.config/xfce4/xfconf/**
+      - src/opensuse/xfce/.config/xfce4/xfconf/xfce-perchannel-xml/**
+      - src/ubuntu/sysbox/**
   - name1: fedora
     name2: 42
     base: fedora:42
@@ -298,46 +313,18 @@ multiImages:
       - src/fedora43/xfce/.config/xfce4/xfconf/**
       - src/fedora43/xfce/.config/xfce4/xfconf/xfce-perchannel-xml/**
   - name1: parrotos
-    name2: 6
-    base: parrotsec/core:6
+    name2: 7
+    base: parrotsec/core:7.1
     bg: bg_parrotos6.jpg
-    distro: parrotos6
+    distro: parrotos7
     dockerfile: dockerfile-kasm-core
     changeFiles:
       - dockerfile-kasm-core
-      - src/parrotos6/**
+      - src/parrotos7/**
       - src/ubuntu/nvidia/**
       - src/ubuntu/sysbox/**
       - src/ubuntu/virtualgl/**
-      - src/parrotos6/**
-  - name1: alpine
-    name2: 319
-    base: alpine:3.19
-    bg: bg_alpine.png
-    distro: alpine
-    dockerfile: dockerfile-kasm-core-alpine
-    changeFiles:
-      - dockerfile-kasm-core-alpine
-      - src/alpine/**
-      - src/alpine/xfce/**
-      - src/alpine/xfce/.config/**
-      - src/alpine/xfce/.config/xfce4/**
-      - src/alpine/xfce/.config/xfce4/xfconf/**
-      - src/alpine/xfce/.config/xfce4/xfconf/xfce-perchannel-xml/**
-  - name1: alpine
-    name2: 320
-    base: alpine:3.20
-    bg: bg_alpine.png
-    distro: alpine
-    dockerfile: dockerfile-kasm-core-alpine
-    changeFiles:
-      - dockerfile-kasm-core-alpine
-      - src/alpine/**
-      - src/alpine/xfce/**
-      - src/alpine/xfce/.config/**
-      - src/alpine/xfce/.config/xfce4/**
-      - src/alpine/xfce/.config/xfce4/xfconf/**
-      - src/alpine/xfce/.config/xfce4/xfconf/xfce-perchannel-xml/**
+      - src/parrotos7/**
   - name1: alpine
     name2: 321
     base: alpine:3.21

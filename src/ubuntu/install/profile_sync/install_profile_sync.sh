@@ -36,7 +36,13 @@ handle_other_distros_conversion() {
   case "$DISTRO" in
     kali) profile_distro="kali_kali-rolling"
       ;;
-    opensuse) profile_distro="opensuse_15"
+    opensuse) 
+      if grep -q '15.6' /etc/os-release; then
+        profile_distro="opensuse_15"
+      fi
+      if grep -q '16' /etc/os-release; then
+        profile_distro="opensuse_16"
+      fi
       ;;
     alpine)
       if grep -q 'v3.17' /etc/os-release; then

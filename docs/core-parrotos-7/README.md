@@ -1,6 +1,6 @@
 # About This Image
 
-This image contains a browser-accessible version of Parrot OS 6.
+This image contains a browser-accessible version of Parrot OS 7.
 
 ![Screenshot][Image_Screenshot]
 
