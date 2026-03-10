@@ -112,10 +112,6 @@ ADD ./src/common/startup_scripts $STARTUPDIR
 RUN bash $STARTUPDIR/set_user_permission.sh $STARTUPDIR $HOME && \
     echo 'source $STARTUPDIR/generate_container_user' >> $HOME/.bashrc
 
-### VirtualGL
-COPY ./src/ubuntu/install/virtualgl $INST_SCRIPTS/virtualgl/
-RUN bash $INST_SCRIPTS/virtualgl/install_virtualgl.sh && rm -rf $INST_SCRIPTS/virtualgl/
-
 ### Sysbox support
 COPY ./src/ubuntu/install/sysbox $INST_SCRIPTS/sysbox/
 RUN bash $INST_SCRIPTS/sysbox/install_systemd.sh && rm -rf $INST_SCRIPTS/sysbox/
