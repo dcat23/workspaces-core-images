@@ -185,7 +185,7 @@ scan_{{ IMAGE.name1 }}_{{ IMAGE.name2 }}:
       {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
       {% endfor %}{% endif %}
   script:
-    - apk add bash
+    - apk add bash curl
     - (cd ci-scripts && bash download-trivy)
     - bash ci-scripts/scan image ${ORG_NAME}/image-cache-private:$(arch)-core-{{ IMAGE.name1 }}-{{ IMAGE.name2 }}-${SANITIZED_BRANCH}-${CI_PIPELINE_ID}
   needs:
@@ -224,7 +224,7 @@ scan_{{ IMAGE.name1 }}_{{ IMAGE.name2 }}:
       {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
       {% endfor %}{% endif %}
   script:
-    - apk add bash
+    - apk add bash curl
     - (cd ci-scripts && bash download-trivy)
     - bash ci-scripts/scan image ${ORG_NAME}/image-cache-private:x86_64-core-{{ IMAGE.name1 }}-{{ IMAGE.name2 }}-${SANITIZED_BRANCH}-${CI_PIPELINE_ID}
   needs:
