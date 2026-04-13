@@ -2,9 +2,7 @@
 set -e
 
 prepare_rpm_repo_dependencies() {
-  if [[ "$DISTRO" = "oracle7" ]]; then
-    yum-config-manager --enable ol7_optional_latest
-  elif [[ "$DISTRO" = "oracle8" ]]; then
+  if [[ "$DISTRO" = "oracle8" ]]; then
     dnf config-manager --set-enabled ol8_codeready_builder
     dnf install -y oracle-epel-release-el8
   elif [[ "${DISTRO}" == "oracle9" ]]; then
@@ -17,7 +15,7 @@ echo "Install KasmVNC server"
 cd /tmp
 BUILD_ARCH=$(uname -m)
 UBUNTU_CODENAME=""
-COMMIT_ID="e170785a471811b32e363383333726e5ae1b2f8c"
+COMMIT_ID="d9b4772680641bd7b122519bdfdcdc4b3b264d8f"
 BRANCH="master" # just use 'release' for a release branch
 KASMVNC_VER="1.4.1"
 COMMIT_ID_SHORT=$(echo "${COMMIT_ID}" | cut -c1-6)
@@ -50,13 +48,7 @@ elif [[ "${DISTRO}" == @(rockylinux9|oracle9|rhel9|almalinux9) ]] ; then
         BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_oracle_9_${KASM_VER_NAME_PART}_aarch64.rpm"
     fi
 elif [[ "${DISTRO}" == "opensuse" ]] ; then
-    if $(grep -q "15.6" /etc/os-release);then
-        if [[ "$(arch)" =~ ^x86_64$ ]] ; then
-            BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_opensuse_15_${KASM_VER_NAME_PART}_x86_64.rpm"
-        else
-            BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_opensuse_15_${KASM_VER_NAME_PART}_aarch64.rpm"
-        fi
-    elif $(grep -q "16" /etc/os-release);then
+    if grep -q "16" /etc/os-release;then
         if [[ "$(arch)" =~ ^x86_64$ ]] ; then
             BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_opensuse_16_${KASM_VER_NAME_PART}_x86_64.rpm"
         else
@@ -82,7 +74,7 @@ elif [[ "${DISTRO}" = @(debian|parrotos7) ]] ; then
         else
             BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_trixie_${KASM_VER_NAME_PART}_arm64.deb"
         fi
-    elif $(grep -q bookworm /etc/os-release) || $(grep -q lory /etc/os-release); then
+    elif grep -q bookworm /etc/os-release || $(grep -q lory /etc/os-release); then
         if [[ "$(arch)" =~ ^x86_64$ ]] ; then
             BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_bookworm_${KASM_VER_NAME_PART}_amd64.deb"
         else

@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-if [ "${DISTRO}" == "parrotos7" ]; then
-  PARROTEXTRA="-t lory-backports"
-fi
-
 echo "Install some common tools for further installation"
 if [[ "${DISTRO}" == @(fedora42|fedora43|oracle8|oracle9|rockylinux9|rockylinux8|almalinux8|almalinux9) ]]; then
   dnf install -y wget net-tools bzip2 tar vim hostname procps-ng bc vulkan-tools

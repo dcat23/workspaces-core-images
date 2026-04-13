@@ -1,6 +1,6 @@
 # About This Image
 
-This image contains a browser-accessible version of Fedora 41.
+This image contains a browser-accessible version of Fedora 42.
 
 ![Screenshot][Image_Screenshot]
 

@@ -1,6 +1,6 @@
 # About This Image
 
-This image contains a browser-accessible version of Alpine 3.20.
+This image contains a browser-accessible version of Alpine 3.22.
 
 ![Screenshot][Image_Screenshot]
 

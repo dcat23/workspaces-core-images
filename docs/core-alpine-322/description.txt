@@ -1,0 +1,1 @@
+Alpine 3.22 base image for Kasm Workspaces

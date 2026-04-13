@@ -113,6 +113,7 @@ elif [ "$DISTRO" = "alpine" ]; then
     dbus-x11 \
     gvfs \
     mesa \
+    xclip \
     mesa-dri-gallium \
     mesa-gl \
     openbox \

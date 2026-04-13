@@ -7,7 +7,17 @@ echo $DISTRO
 if [[ "${DISTRO}" == @(almalinux8|almalinux9|oracle8|oracle9|rhel9|rockylinux8|rockylinux9|fedora42|fedora43) ]]; then
   dnf install -y cups cups-client cups-pdf
 elif [ "${DISTRO}" == "opensuse" ]; then
-  zypper install -y cups cups-client cups-pdf
+  if grep -q "16" /etc/os-release; then
+      zypper addrepo -G https://download.opensuse.org/repositories/Printing/16.0/ printing
+  fi
+  zypper install -y cups cups-client 
+  if [[ "$(uname -m)" == "aarch64" ]]; then
+    curl -O https://kasmweb-build-artifacts.s3.amazonaws.com/kasm_backend/opensuse-cups-pdf-arm/3.0.2/cups-pdf-3.0.2-lp160.15.3.aarch64.rpm
+    zypper --no-gpg-checks install -y ./cups-pdf-3.0.2-lp160.15.3.aarch64.rpm
+    rm -f ./cups-pdf-3.0.2-lp160.15.3.aarch64.rpm
+  else
+    zypper install -y cups-pdf
+  fi
 elif [ "${DISTRO}" == "alpine" ]; then
   echo '@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories
   apk add --no-cache cups cups-client cups-pdf@testing

@@ -255,21 +255,6 @@ multiImages:
       - src/almalinux9/xfce/.config/xfce4/xfconf/xfce-perchannel-xml/**
       - src/ubuntu/sysbox/**
   - name1: opensuse
-    name2: 15
-    base: opensuse/leap:15.6
-    bg: bg_opensuse.png
-    distro: opensuse
-    dockerfile: dockerfile-kasm-core-suse
-    changeFiles:
-      - dockerfile-kasm-core-suse
-      - src/opensuse/**
-      - src/opensuse/xfce/**
-      - src/opensuse/xfce/.config/**
-      - src/opensuse/xfce/.config/xfce4/**
-      - src/opensuse/xfce/.config/xfce4/xfconf/**
-      - src/opensuse/xfce/.config/xfce4/xfconf/xfce-perchannel-xml/**
-      - src/ubuntu/sysbox/**
-  - name1: opensuse
     name2: 16
     base: opensuse/leap:16.0
     bg: bg_opensuse.png
@@ -328,6 +313,34 @@ multiImages:
   - name1: alpine
     name2: 321
     base: alpine:3.21
+    bg: bg_alpine.png
+    distro: alpine
+    dockerfile: dockerfile-kasm-core-alpine
+    changeFiles:
+      - dockerfile-kasm-core-alpine
+      - src/alpine/**
+      - src/alpine/xfce/**
+      - src/alpine/xfce/.config/**
+      - src/alpine/xfce/.config/xfce4/**
+      - src/alpine/xfce/.config/xfce4/xfconf/**
+      - src/alpine/xfce/.config/xfce4/xfconf/xfce-perchannel-xml/**
+  - name1: alpine
+    name2: 322
+    base: alpine:3.22
+    bg: bg_alpine.png
+    distro: alpine
+    dockerfile: dockerfile-kasm-core-alpine
+    changeFiles:
+      - dockerfile-kasm-core-alpine
+      - src/alpine/**
+      - src/alpine/xfce/**
+      - src/alpine/xfce/.config/**
+      - src/alpine/xfce/.config/xfce4/**
+      - src/alpine/xfce/.config/xfce4/xfconf/**
+      - src/alpine/xfce/.config/xfce4/xfconf/xfce-perchannel-xml/**
+  - name1: alpine
+    name2: 323
+    base: alpine:3.23
     bg: bg_alpine.png
     distro: alpine
     dockerfile: dockerfile-kasm-core-alpine

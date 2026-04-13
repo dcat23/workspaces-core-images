@@ -17,7 +17,7 @@ fi
 
 # Intall squid
 SQUID_COMMIT='c45537169794a16029e06d7d456edb21b9ce7d12'
-if $(grep -q Focal /etc/os-release) || $(grep -q bullseye /etc/os-release) || [ -f /usr/bin/zypper ] || [[ "${DISTRO}" == @(oracle8|almalinux8|rockylinux8) ]]; then
+if grep -q Focal /etc/os-release || grep -q bullseye /etc/os-release || [[ "${DISTRO}" == @(oracle8|almalinux8|rockylinux8) ]]; then
   wget -qO- https://kasmweb-build-artifacts.s3.amazonaws.com/kasm-squid-builder/${SQUID_COMMIT}/output/kasm-squid-builder_ubuntu11_${ARCH}.tar.gz | tar -xzf - -C /
 elif [[ "${DISTRO}" == "alpine" ]]; then
   wget -qO- https://kasmweb-build-artifacts.s3.amazonaws.com/kasm-squid-builder/${SQUID_COMMIT}/output/kasm-squid-builder_alpine_${ARCH}.tar.gz | tar -xzf - -C /
@@ -30,7 +30,7 @@ if [[ "${DISTRO}" == @(oracle8|oracle9|rhel9|fedora42|fedora43|almalinux8|almali
   useradd --system --shell /usr/sbin/nologin --home-dir /bin proxy
 elif [ "${DISTRO}" == "opensuse" ]; then
   useradd --system --shell /usr/sbin/nologin --home-dir /bin proxy
-  groupadd -g 65511 proxy
+  groupadd -f -g 65511 proxy
   usermod -a -G proxy proxy
 fi
 
@@ -52,9 +52,9 @@ chown -R proxy:proxy /etc/squid/blocked.acl
 
 
 if [[ "${DISTRO}" == @(oracle8|fedora42|fedora43|oracle9|rhel9|rockylinux9|rockylinux8|almalinux9|almalinux8) ]]; then
-  dnf install -y memcached cyrus-sasl iproute
+  dnf install -y memcached cyrus-sasl cyrus-sasl-plain iproute
 elif [ "${DISTRO}" == "opensuse" ]; then
-  zypper install -yn memcached cyrus-sasl iproute2 libatomic1
+  zypper install -yn memcached cyrus-sasl cyrus-sasl-plain iproute2 libatomic1
 elif [[ "${DISTRO}" == "alpine" ]]; then
   apk add --no-cache memcached cyrus-sasl iproute2 libatomic
 else
@@ -91,7 +91,7 @@ chmod +x /etc/squid/kasm_squid_adapter
 if [[ "${DISTRO}" == @(oracle8|fedora42|fedora43|oracle9|rhel9|rockylinux9|rockylinux8|almalinux9|almalinux8) ]]; then
   dnf install -y nss-tools
 elif [ "${DISTRO}" == "opensuse" ]; then
-  zypper install -yn mozilla-nss-tools
+  zypper install -yn mozilla-nss-tools p11-kit
 elif [ "${DISTRO}" == "alpine" ]; then
   apk add --no-cache nss-tools
 else

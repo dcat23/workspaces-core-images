@@ -34,7 +34,6 @@ elif [ "${DISTRO}" == "opensuse" ]; then
     kmod \
     sudo \
     systemd \
-    systemd-sysvinit \
     udev
 fi
 

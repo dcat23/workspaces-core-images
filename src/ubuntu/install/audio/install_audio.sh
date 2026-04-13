@@ -32,22 +32,62 @@ elif [ "${DISTRO}" == "fedora43" ]; then
   dnf install -y --allowerasing ffmpeg pulseaudio pulseaudio-utils
 elif [ "${DISTRO}" == opensuse ]; then
   zypper install -ny curl git
-  zypper install -yn ffmpeg pulseaudio-utils
-elif [ "${DISTRO}" == "alpine" ]; then
-  if grep -q v3.20 /etc/os-release || grep -q v3.21 /etc/os-release; then
-    apk add --no-cache \
-      ffmpeg \
-      ffplay \
-      git \
-      pulseaudio \
-      pulseaudio-utils
-  else
-    apk add --no-cache \
-      ffmpeg \
-      git \
-      pulseaudio \
-      pulseaudio-utils
+  if grep -q "15.6" /etc/os-release; then
+    zypper install -yn ffmpeg pulseaudio-utils
+  elif grep -q "16" /etc/os-release; then
+    # Packman provides ffmpeg-4 compiled with x264/x265 support (required by KasmVNC
+    # software encoder). The main repo ffmpeg-4 lacks those codecs.
+    zypper addrepo -cfp 90 'https://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Leap_$releasever/' packman
+    zypper --gpg-auto-import-keys refresh packman
+    zypper install -yn --allow-vendor-change ffmpeg-4 pulseaudio-utils \
+    pipewire \
+    pipewire-pulseaudio \
+    wireplumber
+    # Lock ffmpeg-7 — Packman provides it too and it breaks KasmVNC's libavcodec
+    zypper addlock ffmpeg-7
+    # Remove the Packman repo so later build steps can't accidentally pull more packages
+    zypper removerepo packman
+    # pipewire-pulseaudio replaces pulseaudio on openSUSE 16; wrap the binary so
+    # START_PULSEAUDIO=1 works — pipewire-pulse doesn't understand --start.
+    cat > /usr/local/bin/pulseaudio <<'EOF'
+#!/bin/bash
+# PipeWire needs XDG_RUNTIME_DIR for its socket
+export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/var/run/pulse}"
+mkdir -p "$XDG_RUNTIME_DIR"
+# Start the core PipeWire daemon if needed
+pgrep -x pipewire > /dev/null 2>&1 || /usr/bin/pipewire &
+sleep 0.5
+# Start the WirePlumber session manager if needed
+pgrep -x wireplumber > /dev/null 2>&1 || /usr/bin/wireplumber &
+sleep 0.3
+# Start the PulseAudio compatibility server if needed
+pgrep -x pipewire-pulse > /dev/null 2>&1 || /usr/bin/pipewire-pulse &
+# Wait for the PulseAudio compat socket to be available (up to 5s).
+# pipewire-pulse may place the socket at $XDG_RUNTIME_DIR/pulse/native
+# (e.g. /var/run/pulse/pulse/native) rather than $XDG_RUNTIME_DIR/native.
+# If that happens, symlink it to /var/run/pulse/native so that
+# PULSE_RUNTIME_PATH and PULSE_SERVER both work correctly.
+for _i in $(seq 1 10); do
+    [ -S /var/run/pulse/native ] && break
+    if [ -S /var/run/pulse/pulse/native ]; then
+        ln -sf /var/run/pulse/pulse/native /var/run/pulse/native
+        break
+    fi
+    sleep 0.5
+done
+EOF
+    chmod +x /usr/local/bin/pulseaudio
+    # ffmpeg-4 installs as /usr/bin/ffmpeg-4; create /usr/bin/ffmpeg so that
+    # vnc_startup.sh can call 'ffmpeg -f pulse ...' for audio streaming
+    [ -e /usr/bin/ffmpeg ] || ln -s /usr/bin/ffmpeg-4 /usr/bin/ffmpeg
   fi
+elif [ "${DISTRO}" == "alpine" ]; then
+  apk add --no-cache \
+    ffmpeg \
+    ffplay \
+    git \
+    pulseaudio \
+    pulseaudio-utils
 else
   apt-get update
   apt-get install -y --no-install-recommends \

@@ -73,7 +73,11 @@ elif [[ "$DISTRO" = @(ubuntu|debian) ]]; then
     xterm \
     xclip
 elif [[ "$DISTRO" = "parrotos7" ]]; then
-  apt-get install -y \
+  # Plymouth fails in Docker because it tries to run update-initramfs, which doesn't exists in a container environment
+  printf '#!/bin/sh\nexit 0\n' > /usr/sbin/update-initramfs
+  chmod +x /usr/sbin/update-initramfs
+  DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    -o Dpkg::Options::="--force-all" \
     dbus-x11 \
     desktop-base \
     maia-icon-theme \
@@ -152,13 +156,26 @@ elif [ "$DISTRO" = "opensuse" ]; then
   zypper install -yn -t pattern xfce
   zypper install -yn \
     gvfs \
-    xclip \
     xfce4-terminal \
     xfce4-notifyd \
-	  kdialog \
-    xset
+    xfce4-power-manager \
+    xfce4-screenshooter \
+    xclip \
+    xsel \
+    thunar-archive-plugin file-roller \
+    kdialog \
+    wmctrl \
+    wl-clipboard \
+    dbus-1 \
+    dbus-1-daemon \
+    dbus-1-x11 \
+    dbus-broker \
+    xrdb \
+    xset 
+  dbus-uuidgen --ensure
   # Pidof is no longer shipped in OpenSuse
-  ln -s /usr/bin/pgrep /usr/bin/pidof
+  # pidof is included in newer version of OpenSuse so checking before creating symlink
+  [ -e /usr/bin/pidof ] || ln -s /usr/bin/pgrep /usr/bin/pidof
 elif [[ "$DISTRO" = @(fedora42|fedora43) ]]; then
   dnf install -y \
     dbus-tools \
@@ -170,6 +187,8 @@ elif [[ "$DISTRO" = @(fedora42|fedora43) ]]; then
     gtk-xfce-engine \
     mousepad \
     Thunar \
+    xclip \
+    xsel \
     xfce4-appfinder \
     xfce4-datetime-plugin \
     xfce4-panel \
@@ -202,6 +221,7 @@ elif [ "$DISTRO" = "alpine" ]; then
     mesa-gl \
     mousepad \
     thunar \
+    xclip \
     xfce4 \
     xfce4-terminal \
     xfce4-notifyd

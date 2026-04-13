@@ -1,6 +1,6 @@
 # About This Image
 
-This image contains a browser-accessible version of Fedora 40.
+This image contains a browser-accessible version of Fedora 43.
 
 ![Screenshot][Image_Screenshot]
 

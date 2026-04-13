@@ -228,9 +228,9 @@ function start_kasmvnc (){
 	#Disable X11 Screensaver
 	if [ "${DISTRO}" != "alpine" ]; then
 		echo "Disabling X Screensaver Functionality"
-		xset -dpms
-		xset s off
-		xset q
+		xset -dpms || true
+		xset s off || true
+		xset q || true
 	else
 		echo "Disabling of X Screensaver Functionality for $DISTRO is not required."
 	fi

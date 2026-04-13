@@ -12,7 +12,7 @@ set -ex
     if [ -f /etc/fedora-release ]; then
         DISTRO=fedora
     elif [ -f /etc/oracle-release ] || [ -f /etc/rocky-release ] || [ -f /etc/almalinux-release ] || [ -f /etc/redhat-release ]; then
-        DISTRO=oracle7
+        DISTRO=oracle
     elif [ -f /usr/bin/zypper ]; then
         DISTRO=opensuse
     elif [ -f /etc/dpkg/origins/parrot ]; then
@@ -21,7 +21,7 @@ set -ex
         DISTRO=alpine
     fi
 
-    if [[ "${DISTRO}" == @(fedora) ]]; then
+    if [[ "${DISTRO}" == @(fedora|oracle) ]]; then
         CERT_FILE=/etc/pki/ca-trust/source/anchors/squid.crt
     elif [ "${DISTRO}" == "opensuse" ]; then
         CERT_FILE=/usr/share/pki/trust/anchors/squid.crt
@@ -42,8 +42,11 @@ set -ex
     fi
     chmod 644 ${CERT_FILE}
 
-    if [[ "${DISTRO}" == @(fedora) ]]; then
+    if [[ "${DISTRO}" == @(fedora|oracle) ]]; then
         update-ca-trust
+    elif [ "${DISTRO}" == "opensuse" ]; then
+        trust anchor --store "${CERT_FILE}" 2>/dev/null || true
+        update-ca-certificates
     else
         update-ca-certificates
     fi
@@ -61,7 +64,7 @@ set -ex
 
     export MEMCACHE_PASSWORD="$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 13 )"
     echo $MEMCACHE_PASSWORD | saslpasswd2 -a memcached -c -f /etc/sasl2/memcached-sasldb2 kasm
-    if [[ "${DISTRO}" == @(opensuse|fedora|alpine) ]]; then
+    if [[ "${DISTRO}" == @(opensuse|fedora|alpine|oracle) ]]; then
         MEMCACHE_USER=memcached
     else
         MEMCACHE_USER=memcache
@@ -69,10 +72,9 @@ set -ex
     chown $MEMCACHE_USER:$MEMCACHE_USER /etc/sasl2/memcached-sasldb2
 
 
-    if [[ "${DISTRO}" == @(fedora|parrotos7|alpine) ]]; then
-        /usr/bin/memcached -u $MEMCACHE_USER &
-    elif [ "${DISTRO}" == "opensuse" ]; then
-        /usr/sbin/memcached -u $MEMCACHE_USER &
+    if [[ "${DISTRO}" == @(fedora|parrotos7|alpine|opensuse|oracle) ]]; then
+        /usr/bin/memcached -u $MEMCACHE_USER -S &
+        timeout 30 bash -c 'until ss -lnt 2>/dev/null | grep -q ":11211"; do sleep 0.5; done' || true
     else
         /etc/init.d/memcached start
     fi

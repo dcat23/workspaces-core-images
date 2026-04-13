@@ -45,20 +45,14 @@ handle_other_distros_conversion() {
       fi
       ;;
     alpine)
-      if grep -q 'v3.17' /etc/os-release; then
-        profile_distro="alpine_317"
-      fi
-      if grep -q 'v3.18' /etc/os-release; then
-        profile_distro="alpine_318"
-      fi
-      if grep -q 'v3.19' /etc/os-release; then
-        profile_distro="alpine_319"
-      fi
-      if grep -q 'v3.20' /etc/os-release; then
-        profile_distro="alpine_320"
-      fi
       if grep -q 'v3.21' /etc/os-release; then
         profile_distro="alpine_321"
+      fi
+      if grep -q 'v3.22' /etc/os-release; then
+        profile_distro="alpine_322"
+      fi
+      if grep -q 'v3.23' /etc/os-release; then
+        profile_distro="alpine_323"
       fi
       ;;
     rockylinux*)
@@ -106,7 +100,7 @@ download_and_symlink_v2() {
 
 install_v2_dependencies() {
   # Install libarchive 13 on distros that need it
-  if [[ "$DISTRO" = @(debian|ubuntu|kali) ]]; then
+  if [[ "$DISTRO" = @(debian|ubuntu|kali|parrot*) ]]; then
     apt-get update
     apt-get install -y libarchive13
   elif [[ "$DISTRO" = @(opensuse) ]]; then
@@ -124,11 +118,11 @@ check_distro_is_supported
 
 # profile-sync-v1
 BRANCH="release_1.1.1"
-COMMIT_ID="2884ed90a638f59b53a01d8f194aa32381497b8e"
+COMMIT_ID="bdda739846603351abce617cd3c3ebaacdd44ff8"
 download_and_symlink
 
 # profile-sync-v2
 BRANCH="release_2.1.0"
-COMMIT_ID="a67085e5c6095d373d682fc9901ccdd6b70ffd8c"
+COMMIT_ID="cb3d9c65ab9e0b3160cafa65375bfebbec7f199a"
 install_v2_dependencies
 download_and_symlink_v2
