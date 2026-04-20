@@ -68,7 +68,7 @@ elif [[ "${DISTRO}" == "fedora43" ]] ; then
         BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_fedora_43_${KASM_VER_NAME_PART}_aarch64.rpm"
     fi
 elif [[ "${DISTRO}" = @(debian|parrotos7) ]] ; then
-    if grep -q trixie /etc/os-release || { grep -qi parrot /etc/os-release && grep -q "7.1" /etc/os-release; }; then
+    if grep -q trixie /etc/os-release || grep -qi echo /etc/os-release; then
         if [[ "$(arch)" =~ ^x86_64$ ]] ; then
             BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_trixie_${KASM_VER_NAME_PART}_amd64.deb"
         else

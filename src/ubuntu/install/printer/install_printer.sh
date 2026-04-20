@@ -10,13 +10,13 @@ elif [ "${DISTRO}" == "opensuse" ]; then
   if grep -q "16" /etc/os-release; then
       zypper addrepo -G https://download.opensuse.org/repositories/Printing/16.0/ printing
   fi
-  zypper install -y cups cups-client 
+  zypper install --allow-vendor-change -y cups cups-client
   if [[ "$(uname -m)" == "aarch64" ]]; then
     curl -O https://kasmweb-build-artifacts.s3.amazonaws.com/kasm_backend/opensuse-cups-pdf-arm/3.0.2/cups-pdf-3.0.2-lp160.15.3.aarch64.rpm
     zypper --no-gpg-checks install -y ./cups-pdf-3.0.2-lp160.15.3.aarch64.rpm
     rm -f ./cups-pdf-3.0.2-lp160.15.3.aarch64.rpm
   else
-    zypper install -y cups-pdf
+    zypper install --allow-vendor-change -y cups-pdf
   fi
 elif [ "${DISTRO}" == "alpine" ]; then
   echo '@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories
