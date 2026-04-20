@@ -31,11 +31,8 @@ elif [[ "${DISTRO}" == @(oracle8|oracle9|rhel9|rockylinux9|rockylinux8|almalinux
     echo "Generating Locale for ${LOCALE}"
     localedef -i ${LOCALE} -f UTF-8 ${LOCALE}.UTF-8
   done
-elif [ "${DISTRO}" == "opensuse" ]; then
-  if grep -q "15.6" /etc/os-release; then
-    zypper addrepo -G \
-      https://download.opensuse.org/repositories/M17N:/fonts/15.6/ fonts-x86_64
-  elif grep -q "16" /etc/os-release; then
+elif [[ "${DISTRO}" == "opensuse" ]]; then
+  if grep -q "16" /etc/os-release; then
     zypper addrepo -G \
       https://download.opensuse.org/repositories/M17N:/fonts/16.0/ fonts-x86_64
   fi
@@ -49,7 +46,7 @@ elif [ "${DISTRO}" == "opensuse" ]; then
     echo "Generating Locale for ${LOCALE}"
     localedef -i ${LOCALE} -f UTF-8 ${LOCALE}.UTF-8
   done
-elif [ "${DISTRO}" == "alpine" ]; then
+elif [[ "${DISTRO}" == "alpine" ]]; then
   apk add --no-cache \
     font-noto-all \
     font-noto-cjk \

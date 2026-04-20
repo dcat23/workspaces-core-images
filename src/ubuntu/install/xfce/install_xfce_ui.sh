@@ -173,8 +173,8 @@ elif [ "$DISTRO" = "opensuse" ]; then
     xrdb \
     xset 
   dbus-uuidgen --ensure
-  # Pidof is no longer shipped in OpenSuse
   # pidof is included in newer version of OpenSuse so checking before creating symlink
+  # incase OpenSuse decides not to include it like in the past.
   [ -e /usr/bin/pidof ] || ln -s /usr/bin/pgrep /usr/bin/pidof
 elif [[ "$DISTRO" = @(fedora42|fedora43) ]]; then
   dnf install -y \

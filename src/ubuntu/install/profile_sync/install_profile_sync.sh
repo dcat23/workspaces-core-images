@@ -37,9 +37,6 @@ handle_other_distros_conversion() {
     kali) profile_distro="kali_kali-rolling"
       ;;
     opensuse) 
-      if grep -q '15.6' /etc/os-release; then
-        profile_distro="opensuse_15"
-      fi
       if grep -q '16' /etc/os-release; then
         profile_distro="opensuse_16"
       fi

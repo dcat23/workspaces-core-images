@@ -4,7 +4,7 @@ set -ex
 
 ARCH=$(arch | sed 's/aarch64/arm64/g' | sed 's/x86_64/amd64/g')
 echo "Install Audio Requirements"
-if [ "${DISTRO}" == "oracle8" ]; then
+if [[ "${DISTRO}" == "oracle8" ]]; then
   dnf install -y curl git
   dnf config-manager --set-enabled ol8_codeready_builder
   dnf localinstall -y --nogpgcheck https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm
@@ -22,19 +22,17 @@ elif [[ "${DISTRO}" == @(rockylinux9|almalinux9) ]]; then
 elif [[ "${DISTRO}" == @(rockylinux8|almalinux8) ]]; then
   dnf localinstall -y --nogpgcheck https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm
   dnf install -y --allowerasing ffmpeg pulseaudio-utils pulseaudio
-elif [ "${DISTRO}" == "fedora42" ]; then
+elif [[ "${DISTRO}" == "fedora42" ]]; then
   dnf install -y curl git
   dnf-3 localinstall -y --nogpgcheck https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-42.noarch.rpm
   dnf install -y --allowerasing ffmpeg pulseaudio pulseaudio-utils
-elif [ "${DISTRO}" == "fedora43" ]; then
+elif [[ "${DISTRO}" == "fedora43" ]]; then
   dnf install -y curl git
   dnf-3 localinstall -y --nogpgcheck https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-43.noarch.rpm
   dnf install -y --allowerasing ffmpeg pulseaudio pulseaudio-utils
-elif [ "${DISTRO}" == opensuse ]; then
+elif [[ "${DISTRO}" == opensuse ]]; then
   zypper install -ny curl git
-  if grep -q "15.6" /etc/os-release; then
-    zypper install -yn ffmpeg pulseaudio-utils
-  elif grep -q "16" /etc/os-release; then
+  if grep -q "16" /etc/os-release; then
     # Packman provides ffmpeg-4 compiled with x264/x265 support (required by KasmVNC
     # software encoder). The main repo ffmpeg-4 lacks those codecs.
     zypper addrepo -cfp 90 'https://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Leap_$releasever/' packman
@@ -79,9 +77,9 @@ EOF
     chmod +x /usr/local/bin/pulseaudio
     # ffmpeg-4 installs as /usr/bin/ffmpeg-4; create /usr/bin/ffmpeg so that
     # vnc_startup.sh can call 'ffmpeg -f pulse ...' for audio streaming
-    [ -e /usr/bin/ffmpeg ] || ln -s /usr/bin/ffmpeg-4 /usr/bin/ffmpeg
+    [[ -e /usr/bin/ffmpeg ]] || ln -s /usr/bin/ffmpeg-4 /usr/bin/ffmpeg
   fi
-elif [ "${DISTRO}" == "alpine" ]; then
+elif [[ "${DISTRO}" == "alpine" ]]; then
   apk add --no-cache \
     ffmpeg \
     ffplay \
