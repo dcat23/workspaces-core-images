@@ -10,7 +10,7 @@ prepare_rpm_repo_dependencies() {
     dnf install -y oracle-epel-release-el9
   fi
 }
-https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/367266556776a2f24f9ce9b6bca37436a08bf05b/kasmvncserver_bookworm_1.4.1_feature_VNC-151-investigate-tiger-vnc-h-264-encode-decoder2-color-conversion_367266_amd64.deb
+# https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/367266556776a2f24f9ce9b6bca37436a08bf05b/kasmvncserver_bookworm_1.4.1_feature_VNC-151-investigate-tiger-vnc-h-264-encode-decoder2-color-conversion_367266_amd64.deb
 echo "Install KasmVNC server"
 cd /tmp
 BUILD_ARCH=$(uname -m)
