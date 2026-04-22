@@ -7,8 +7,10 @@ if [[ "${DISTRO}" == "alpine" ]]; then
         runuser \
         xhost
 elif [ "${DISTRO}" == "opensuse" ]; then
-    zypper ar -cfp 90 'https://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Leap_$releasever/' packman
-    zypper -n --gpg-auto-import-keys dup --from packman --allow-vendor-change
+    if grep -q "15\." /etc/os-release; then
+        zypper ar -cfp 90 'https://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Leap_$releasever/' packman
+        zypper -n --gpg-auto-import-keys dup --from packman --allow-vendor-change
+    fi
     zypper install -ny xhost
 fi
 

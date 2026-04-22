@@ -7,9 +7,7 @@ BRANCH="main"
 COMMIT_ID_SHORT=$(echo "${COMMIT_ID}" | cut -c1-6)
 ARCH=$(arch | sed 's/aarch64/arm64/g' | sed 's/x86_64/amd64/g')
 
-if [[ "${DISTRO}" == @(centos|oracle7) ]]; then
-  yum install -y wget nss-tools glib2
-elif [[ "${DISTRO}" == @(almalinux8|almalinux9|oracle8|oracle9|rhel9|rockylinux8|rockylinux9|fedora37|fedora38|fedora39|fedora40|fedora41|fedora42|fedora43) ]]; then
+if [[ "${DISTRO}" == @(almalinux8|almalinux9|oracle8|oracle9|rhel9|rockylinux8|rockylinux9|fedora42|fedora43) ]]; then
   dnf install -y wget nss-tools glib2
 elif [ "${DISTRO}" == "opensuse" ]; then
   zypper install -yn wget mozilla-nss-tools libglib-2_0-0

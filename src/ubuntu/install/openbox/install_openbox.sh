@@ -30,11 +30,11 @@ EOL
 }
 
 echo "Install Openbox UI components"
-if [[ "${DISTRO}" != @(centos|oracle7|oracle8|opensuse|fedora37|fedora38|oracle9|rhel9|rockylinux9|rockylinux8|almalinux8|almalinux9|alpine) ]]; then
+if [[ "${DISTRO}" != @(oracle8|opensuse|fedora42|fedora43|oracle9|rhel9|rockylinux9|rockylinux8|almalinux8|almalinux9|alpine) ]]; then
   apt-get update
 fi
 
-if [[ "$DISTRO" = @(ubuntu|debian|parrotos5) ]]; then
+if [[ "$DISTRO" = @(ubuntu|debian|parrotos7) ]]; then
   apt-get install -y x11-utils
   apt-get install -y --no-install-recommends \
     curl \
@@ -45,20 +45,6 @@ if [[ "$DISTRO" = @(ubuntu|debian|parrotos5) ]]; then
     xterm
   echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
   locale-gen
-elif [[ "${DISTRO}" == @(centos|oracle7) ]]; then
-  if [ "${DISTRO}" == centos ]; then
-    yum install -y epel-release
-  else
-    yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm  
-  fi
-  disable_epel_nss_wrapper_that_breaks_firefox
-  yum install -y \
-    curl \
-    openbox \
-    wmctrl \
-    xclip \
-    xset \
-    xterm
 elif [ "$DISTRO" = "oracle8" ]; then
   dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
   dnf install -y \
@@ -112,7 +98,7 @@ elif [ "$DISTRO" = "opensuse" ]; then
     xclip \
     xset \
     xterm
-elif [[ "$DISTRO" = @(fedora37|fedora38) ]]; then
+elif [[ "$DISTRO" = @(fedora42|fedora43) ]]; then
   dnf install -y \
     curl \
     gvfs \
@@ -127,13 +113,14 @@ elif [ "$DISTRO" = "alpine" ]; then
     dbus-x11 \
     gvfs \
     mesa \
+    xclip \
     mesa-dri-gallium \
     mesa-gl \
     openbox \
     xterm
 fi
 
-if [[ "${DISTRO}" != @(centos|oracle7|oracle8|fedora37|fedora38|oracle9|rhel9|rockylinux9|rockylinux8|almalinux8|almalinux9|alpine) ]]; then
+if [[ "${DISTRO}" != @(oracle8|fedora42|fedora43|oracle9|rhel9|rockylinux9|rockylinux8|almalinux8|almalinux9|alpine) ]]; then
   replace_default_xinit
   if [ "${START_XFCE4}" == "1" ] ; then
     replace_default_99x11_common_start

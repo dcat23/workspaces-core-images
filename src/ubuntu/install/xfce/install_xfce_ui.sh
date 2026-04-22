@@ -30,7 +30,7 @@ EOL
 }
 
 echo "Install Xfce4 UI components"
-if [[ "${DISTRO}" != @(centos|oracle7|oracle8|opensuse|fedora37|fedora38|fedora39|fedora40|fedora41|fedora42|fedora43|oracle9|rhel9|rockylinux9|rockylinux8|almalinux8|almalinux9|alpine) ]]; then
+if [[ "${DISTRO}" != @(oracle8|opensuse|fedora42|fedora43|oracle9|rhel9|rockylinux9|rockylinux8|almalinux8|almalinux9|alpine) ]]; then
   apt-get update
 fi
 
@@ -72,8 +72,12 @@ elif [[ "$DISTRO" = @(ubuntu|debian) ]]; then
     xfce4-terminal \
     xterm \
     xclip
-elif [[ "$DISTRO" = "parrotos6" ]]; then
-  apt-get install -y \
+elif [[ "$DISTRO" = "parrotos7" ]]; then
+  # Plymouth fails in Docker because it tries to run update-initramfs, which doesn't exists in a container environment
+  printf '#!/bin/sh\nexit 0\n' > /usr/sbin/update-initramfs
+  chmod +x /usr/sbin/update-initramfs
+  DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    -o Dpkg::Options::="--force-all" \
     dbus-x11 \
     desktop-base \
     maia-icon-theme \
@@ -87,20 +91,6 @@ elif [[ "$DISTRO" = "parrotos6" ]]; then
     xfce4-whiskermenu-plugin
   echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
   locale-gen
-elif [[ "${DISTRO}" == @(centos|oracle7) ]]; then
-  if [ "${DISTRO}" == centos ]; then
-    yum install -y epel-release
-  else
-    yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-  fi
-  disable_epel_nss_wrapper_that_breaks_firefox
-  yum groupinstall xfce -y
-  yum install -y \
-    gvfs \
-    wmctrl \
-    xclip \
-    xfce4-notifyd \
-    xset
 elif [ "$DISTRO" = "oracle8" ]; then
   dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
   dnf group install xfce -y
@@ -166,14 +156,27 @@ elif [ "$DISTRO" = "opensuse" ]; then
   zypper install -yn -t pattern xfce
   zypper install -yn \
     gvfs \
-    xclip \
     xfce4-terminal \
     xfce4-notifyd \
-	  kdialog \
-    xset
-  # Pidof is no longer shipped in OpenSuse
-  ln -s /usr/bin/pgrep /usr/bin/pidof
-elif [[ "$DISTRO" = @(fedora37|fedora38|fedora39|fedora40|fedora41|fedora42|fedora43) ]]; then
+    xfce4-power-manager \
+    xfce4-screenshooter \
+    xclip \
+    xsel \
+    thunar-archive-plugin file-roller \
+    kdialog \
+    wmctrl \
+    wl-clipboard \
+    dbus-1 \
+    dbus-1-daemon \
+    dbus-1-x11 \
+    dbus-broker \
+    xrdb \
+    xset 
+  dbus-uuidgen --ensure
+  # pidof is included in newer version of OpenSuse so checking before creating symlink
+  # incase OpenSuse decides not to include it like in the past.
+  [ -e /usr/bin/pidof ] || ln -s /usr/bin/pgrep /usr/bin/pidof
+elif [[ "$DISTRO" = @(fedora42|fedora43) ]]; then
   dnf install -y \
     dbus-tools \
     dbus-x11 \
@@ -184,6 +187,8 @@ elif [[ "$DISTRO" = @(fedora37|fedora38|fedora39|fedora40|fedora41|fedora42|fedo
     gtk-xfce-engine \
     mousepad \
     Thunar \
+    xclip \
+    xsel \
     xfce4-appfinder \
     xfce4-datetime-plugin \
     xfce4-panel \
@@ -216,6 +221,7 @@ elif [ "$DISTRO" = "alpine" ]; then
     mesa-gl \
     mousepad \
     thunar \
+    xclip \
     xfce4 \
     xfce4-terminal \
     xfce4-notifyd
@@ -230,7 +236,7 @@ Exec=/usr/lib/xfce4/notifyd/xfce4-notifyd
 EOL
 fi
 
-if [[ "${DISTRO}" != @(centos|oracle7|oracle8|fedora37|fedora38|fedora39|fedora40|fedora41|fedora42|fedora43|oracle9|rhel9|rockylinux9|rockylinux8|almalinux8|almalinux9|alpine) ]]; then
+if [[ "${DISTRO}" != @(oracle8|fedora42|fedora43|oracle9|rhel9|rockylinux9|rockylinux8|almalinux8|almalinux9|alpine) ]]; then
   replace_default_xinit
   if [ "${START_XFCE4}" == "1" ] ; then
     replace_default_99x11_common_start
