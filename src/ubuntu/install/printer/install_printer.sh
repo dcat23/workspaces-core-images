@@ -32,7 +32,7 @@ fi
 # to the one watched by the printer service
 sed -i -r -e "s:^(Out\s).*:\1/home/kasm-user/PDF:" /etc/cups/cups-pdf.conf
 
-COMMIT_ID="7d2fd6d82d4636701e358f9f2d5b4f3361998c67"
+COMMIT_ID="686ca9b362eba4d9d9c44da271fe973f8519e7ad"
 BRANCH="feature_KASM-8210_bump_dep_versions_for_1_19_0"
 COMMIT_ID_SHORT=$(echo "${COMMIT_ID}" | cut -c1-6)
 
