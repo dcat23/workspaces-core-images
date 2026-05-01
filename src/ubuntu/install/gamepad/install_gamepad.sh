@@ -2,8 +2,8 @@
 ### every exit != 0 fails the script
 set -e
 
-COMMIT_ID="a69c61013e4c3f9600099cf940a33cab3e21f795"
-BRANCH="develop"
+COMMIT_ID="e303017ee1ee64824c941768d4afd41fa269ef5b"
+BRANCH="feature_KASM-8210_bump_dep_versions_for_1_19_0"
 COMMIT_ID_SHORT=$(echo "${COMMIT_ID}" | cut -c1-6)
 
 ARCH=$(arch | sed 's/aarch64/arm64/g' | sed 's/x86_64/amd64/g')
