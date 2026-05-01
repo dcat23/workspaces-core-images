@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-if [ "${DISTRO}" == "parrotos6" ]; then
+if [ "${DISTRO}" == "parrotos7" ]; then
   PARROTEXTRA="-t lory-backports"
 fi
 
