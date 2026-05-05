@@ -13,7 +13,7 @@ Related repos in the broader Kasm system:
 - `kasm_backend` (parent of this clone) — the backend services that orchestrate workspaces
 - `workspaces-images` — application-specific images built on top of these cores
 - `KasmVNC` — the VNC server that renders the desktop to a browser
-- `kasm_squid_adapter`, `kasm_upload_service`, `kasm_printer_service`, `kasm-webcam-server`, `kasm-gamepad-server`, `profile-sync`, `kasm-smartcard-extension` — component binaries pulled in at image build time
+- `kasm_squid_adapter`, `kasm_upload_service`, `kasm_printer_service`, `kasm-webcam-server`, `kasm-gamepad-server`, `profile-sync`, `kasm_smartcard_bridge`, `kasm_websocket_relay`, `kasm_audio_input_server`, `kasm_recorder_service`, `kasm-squid-builder` — component binaries pulled in at image build time
 
 ## Repository Layout
 
@@ -73,17 +73,18 @@ Every dockerfile follows the same shape — a series of `COPY` + `RUN bash $INST
 5. **KasmVNC** — the browser-accessible VNC server (heart of the image)
 6. **profile_sync** — persists user profile to object storage between sessions
 7. **kasm_upload_server** — handles browser-initiated file uploads/downloads
-8. **Audio** (output) + **audio_input** (microphone) — PulseAudio + websocket bridge
-9. **Gamepad** — HID passthrough from browser
-10. **Webcam** — virtual webcam device
-11. **Printer** — CUPS + start_cups.sh
-12. **Recorder** — session recording (ffmpeg + KasmVNC capture)
-13. **Cursors** — custom cursor theme
-14. **Squid** — per-session egress proxy (`kasm_squid_adapter`)
-15. **Smartcard** — CCID/pcscd passthrough
-16. **NVIDIA / VirtualGL** — optional GPU acceleration
-17. **Hook scripts** — `src/common/scripts/kasm_hook_scripts/` (see below)
-18. **Cleanup** — strip caches, man pages, locales to shrink layers
+8. **Audio output** (`kasm_websocket_relay`) — PulseAudio → WebSocket bridge for audio streaming
+9. **Audio input** (`kasm_audio_input_server`) — microphone passthrough from browser
+10. **Gamepad** (`kasm_gamepad_server`) — HID passthrough from browser
+11. **Webcam** (`kasm_webcam_server`) — virtual webcam device
+12. **Printer** (`kasm_printer_service`) — CUPS + start_cups.sh
+13. **Recorder** (`kasm_recorder_service`) — session recording via FFmpeg + KasmVNC capture
+14. **Cursors** — custom cursor theme
+15. **Squid** (`kasm_squid_adapter` + `kasm-squid-builder`) — per-session egress proxy
+16. **Smartcard** (`kasm_smartcard_bridge`) — CCID/pcscd passthrough
+17. **NVIDIA / VirtualGL** — optional GPU acceleration
+18. **Hook scripts** — `src/common/scripts/kasm_hook_scripts/` (see below)
+19. **Cleanup** — strip caches, man pages, locales to shrink layers
 
 Environment variables set by every core image:
 
