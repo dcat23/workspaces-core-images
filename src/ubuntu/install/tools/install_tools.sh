@@ -2,7 +2,7 @@
 set -e
 
 if [ "${DISTRO}" == "parrotos7" ]; then
-  PARROTEXTRA="-t lory-backports"
+  PARROTEXTRA="-t echo-backports"
 fi
 
 ARCH="$(uname -m)"
@@ -138,7 +138,7 @@ else
   if grep -q "kali-rolling" /etc/os-release || grep -q "trixie" /etc/os-release || grep -qi "parrot" /etc/os-release; then
     apt-get install ${PARROTEXTRA} -y vim wget net-tools locales bzip2 wmctrl mesa-utils bc vulkan-tools
   fi
-  if grep -q "kali-rolling" /etc/os-release || grep -q "trixie" /etc/os-release; then
+  if grep -q "kali-rolling" /etc/os-release || grep -q "trixie" /etc/os-release || grep -qi "parrot" /etc/os-release; then
     apt-get install ${PARROTEXTRA} -y vim wget net-tools locales bzip2 wmctrl bc
   else
     apt-get install ${PARROTEXTRA} -y vim wget net-tools locales bzip2 wmctrl software-properties-common bc

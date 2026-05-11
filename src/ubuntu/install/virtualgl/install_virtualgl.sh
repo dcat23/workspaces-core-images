@@ -13,7 +13,7 @@ cleanup_rpm() {
 }
 
 skip_parrotos_due_to_i386_dependencies_lacking() {
-  if [[ "$DISTRO" == "parrotos6" ]]; then
+  if [[ "$DISTRO" == @(parrotos6|parrotos7) ]]; then
     exit
   fi
 }
