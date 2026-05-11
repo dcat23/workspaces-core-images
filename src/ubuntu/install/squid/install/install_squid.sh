@@ -29,9 +29,12 @@ fi
 if [[ "${DISTRO}" == @(oracle8|oracle9|rhel9|fedora42|fedora43|almalinux8|almalinux9|rockylinux8|rockylinux9|alpine) ]]; then
   useradd --system --shell /usr/sbin/nologin --home-dir /bin proxy
 elif [ "${DISTRO}" == "opensuse" ]; then
-  useradd --system --shell /usr/sbin/nologin --home-dir /bin proxy
-  groupadd -f -g 65511 proxy
-  usermod -a -G proxy proxy
+  if ! getent group proxy >/dev/null; then
+    groupadd -g 65511 proxy
+  fi
+  if ! id proxy >/dev/null 2>&1; then
+    useradd --system --shell /usr/sbin/nologin --home-dir /bin -g proxy proxy
+  fi
 fi
 
 # File and perms
