@@ -18,11 +18,9 @@ variables:
   TEST_INSTALLER: "{{ TEST_INSTALLER }}"
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
+  DOCKER_AUTH_CONFIG: ${_DOCKER_AUTH_CONFIG}
   MIRROR_ORG_NAME: "{{ MIRROR_ORG_NAME }}"
 before_script:
-  - docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
-  - if [ "$CI_COMMIT_REF_PROTECTED" == "true" ]; then docker login --username $QUAY_USERNAME --password $QUAY_PASSWORD quay.io; fi 
-  - if [ "$CI_COMMIT_REF_PROTECTED" == "true" ]; then docker login --username $GHCR_USERNAME --password $GHCR_PASSWORD ghcr.io; fi 
   - export SANITIZED_BRANCH="$(echo ${CI_COMMIT_REF_NAME:0:64} | sed -r 's#^release/##' | sed 's/\//_/g')"
 
 include:
