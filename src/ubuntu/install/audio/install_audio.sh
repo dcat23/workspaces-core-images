@@ -98,7 +98,7 @@ fi
 
 mkdir -p /var/run/pulse
 
-WS_COMMIT_ID="c639b4c3738d915db5d94240e554cc185f2abd62"
+WS_COMMIT_ID="b4afb14706a88bf536bd6b1604599bb712b46cb8"
 WS_BRANCH="feature_KASM-8210_bump_dep_versions_for_1_19_0"
 WS_COMMIT_ID_SHORT=$(echo "${WS_COMMIT_ID}" | cut -c1-6)
 

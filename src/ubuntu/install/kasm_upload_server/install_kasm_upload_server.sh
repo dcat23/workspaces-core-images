@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 
-COMMIT_ID="123eb424860002cf50a66a29657c8fa3df393677"
+COMMIT_ID="5e341e906b134a9ac8593c012bbd075b86a987b5"
 BRANCH="feature_KASM-8210_bump_dep_versions_for_1_19_0"
 COMMIT_ID_SHORT=$(echo "${COMMIT_ID}" | cut -c1-6)
 

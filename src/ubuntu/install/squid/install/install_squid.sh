@@ -16,7 +16,7 @@ else
 fi
 
 # Intall squid
-SQUID_COMMIT='68fd8d5a5fbd35a4bf1ad0f2a35974b35ab86e8f'
+SQUID_COMMIT='b5d77ed3feefd38c3331db092531e0fdfe220693'
 if grep -q Focal /etc/os-release || grep -q bullseye /etc/os-release || [[ "${DISTRO}" == @(oracle8|almalinux8|rockylinux8) ]]; then
   wget -qO- https://kasmweb-build-artifacts.s3.amazonaws.com/kasm-squid-builder/${SQUID_COMMIT}/output/kasm-squid-builder_ubuntu11_${ARCH}.tar.gz | tar -xzf - -C /
 elif [[ "${DISTRO}" == "alpine" ]]; then
@@ -75,7 +75,7 @@ sasldb_path: /etc/sasl2/memcached-sasldb2
 EOL
 
 
-COMMIT_ID="754f6de7b33ef431361c2b0b791d2c6a090a0716"
+COMMIT_ID="2b3a81b718582f4fe0ceed5b88473283049f73a8"
 BRANCH="feature_KASM-8210_migrate_to_poetry"
 COMMIT_ID_SHORT=$(echo "${COMMIT_ID}" | cut -c1-6)
 

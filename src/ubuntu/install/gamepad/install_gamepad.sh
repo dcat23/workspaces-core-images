@@ -2,7 +2,7 @@
 ### every exit != 0 fails the script
 set -e
 
-COMMIT_ID="d0bf2b9c1621818ab7d13ec5effc9c02a7377f1e"
+COMMIT_ID="c121c3febb3814c035b1599ab7eb3a4936e9bebf"
 BRANCH="feature_KASM-8210_bump_dep_versions_for_1_19_0"
 COMMIT_ID_SHORT=$(echo "${COMMIT_ID}" | cut -c1-6)
 
