@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 
-COMMIT_ID="0c56f4c9671a0ba895eb81984e1a037d676d366c"
+COMMIT_ID="35f2831bf51b218de58f890cd16a8382c54b2215"
 BRANCH="develop"
 COMMIT_ID_SHORT=$(echo "${COMMIT_ID}" | cut -c1-6)
 
