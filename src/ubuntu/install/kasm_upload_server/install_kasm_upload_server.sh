@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -ex
 
-COMMIT_ID="5e341e906b134a9ac8593c012bbd075b86a987b5"
-BRANCH="feature_KASM-8210_bump_dep_versions_for_1_19_0"
+COMMIT_ID="35f2831bf51b218de58f890cd16a8382c54b2215"
+BRANCH="develop"
 COMMIT_ID_SHORT=$(echo "${COMMIT_ID}" | cut -c1-6)
 
 ARCH=$(arch | sed 's/aarch64/arm64/g' | sed 's/x86_64/amd64/g')
