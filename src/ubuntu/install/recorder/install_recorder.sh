@@ -14,8 +14,8 @@ elif [ "${DISTRO}" == "opensuse" ]; then
     zypper install -ny xhost
 fi
 
-COMMIT_ID="26566c8c515b8855e3de0b47968484adb5434d3f"
-BRANCH="feature_KASM-8469_fix_glibc_mismatch"
+COMMIT_ID="075aab468e8fcb4cf70703770164d8f3b89df5b8"
+BRANCH="develop"
 COMMIT_ID_SHORT=$(echo "${COMMIT_ID}" | cut -c1-6)
 
 ARCH=$(arch | sed 's/aarch64/arm64/g' | sed 's/x86_64/amd64/g')
