@@ -1,0 +1,11 @@
+services:
+    macchiato-core-noble:
+        build:
+            context: .
+            dockerfile: dockerfile-macchiato-core-noble
+        image: macchiato23/kasm-core-macchiato-noble:develop
+        shm_size: 512m
+        ports:
+            - "6902:6901"
+        environment:
+            VNC_PW: password

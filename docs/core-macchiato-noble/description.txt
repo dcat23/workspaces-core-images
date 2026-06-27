@@ -1,0 +1,1 @@
+Ubuntu Noble core image with a macOS Big Sur–styled desktop. Ships WhiteSur GTK/icon/cursor themes, Plank dock, macOS-style top panel with global app menu, Nemo file manager, and Kitty terminal emulator. Intended as a base for downstream workspace images that want the macOS look out of the box.
