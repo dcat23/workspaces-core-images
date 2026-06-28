@@ -85,12 +85,12 @@ multiImages:
     dockerfile: dockerfile-macchiato-core-noble
     changeFiles:
       - dockerfile-macchiato-core-noble
-      - src/ubuntu/xfce-macchiato/**
-      - src/ubuntu/xfce-macchiato/.config/**
-      - src/ubuntu/xfce-macchiato/.config/xfce4/**
-      - src/ubuntu/xfce-macchiato/.config/xfce4/xfconf/**
-      - src/ubuntu/xfce-macchiato/.config/xfce4/xfconf/xfce-perchannel-xml/**
-      - src/ubuntu/xfce-macchiato/.config/xfce4/xfconf/single-application-xfce-perchannel-xml/**
+      - src/ubuntu/xfce-macchiato-v2/**
+      - src/ubuntu/xfce-macchiato-v2/.config/**
+      - src/ubuntu/xfce-macchiato-v2/.config/xfce4/**
+      - src/ubuntu/xfce-macchiato-v2/.config/xfce4/xfconf/**
+      - src/ubuntu/xfce-macchiato-v2/.config/xfce4/xfconf/xfce-perchannel-xml/**
+      - src/ubuntu/xfce-macchiato-v2/.config/xfce4/xfconf/single-application-xfce-perchannel-xml/**
       - src/ubuntu/install/big_sur_theme/**
       - src/ubuntu/install/nemo/**
       - src/ubuntu/install/kitty/**

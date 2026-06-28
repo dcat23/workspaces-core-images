@@ -1,18 +1,17 @@
 #!/usr/bin/env bash
 set -ex
 
-echo "Installing Big Sur (WhiteSur) theme for Kasm"
+echo "Installing Big Sur (WhiteSur) theme for Kasm — v2"
 
 export DEBIAN_FRONTEND=noninteractive
 
-# Omitted from original SmallSur install-debian.sh (unavailable on Noble):
-#   xfce4-indicator-plugin    — removed from Ubuntu repos after Focal
-#   xfce4-sensors-plugin      — hardware sensors unavailable in containers
-#   xfce4-statusnotifier-plugin — merged into systray plugin in XFCE 4.18
-#   ulauncher                 — not in Noble apt repos
-#
-# xfce4-appmenu-plugin IS in Noble universe; appmenu-gtk{2,3}-module +
-# appmenu-registrar provide the DBus bridge for the global menu panel plugin.
+# Compared to v1:
+#   Removed: sassc, libglib2.0-dev-bin, libxml2-utils
+#     (only needed by WhiteSur-gtk-theme/install.sh SCSS compilation; v2 uses
+#     a pre-built release tarball instead)
+#   Added: libgtk-3-bin
+#     (provides gtk-update-icon-cache required by WhiteSur-icon-theme/install.sh;
+#     v1 was missing this so icon caches were never correctly built)
 apt-get update
 apt-get install -y \
     xfce4-power-manager \
@@ -24,49 +23,79 @@ apt-get install -y \
     appmenu-registrar \
     gtk2-engines-murrine \
     gtk2-engines-pixbuf \
-    sassc \
+    libgtk-3-bin \
     git \
-    plank \
-    libglib2.0-dev-bin \
-    libxml2-utils
+    plank
 
 WORK_DIR=/tmp/bigsur-theme-install
 mkdir -p "$WORK_DIR"
 
 # WhiteSur installer scripts resolve the calling user via logname, which has
-# no output inside a Docker build. SUDO_USER=root makes them resolve to root.
+# no output inside a Docker build. SUDO_USER=root makes them fall back to root.
 export SUDO_USER=root
 
 # ---------------------------------------------------------------------------
-# GTK theme — WhiteSur
-# Installed system-wide so both kasm-default-profile and kasm-user pick it up.
-# -c is repeatable; one call installs both variants without the second wiping
-# what the first laid down.
+# GTK theme — WhiteSur (pre-built tarball, no SCSS compilation)
+#
+# v1 called install.sh which compiled every .scss source file via sassc and
+# bundled assets into .gresource binaries via glib-compile-resources. That
+# required three extra build-time packages and produced all four variants
+# (Light, Dark, Light-solid, Dark-solid). v2 extracts only WhiteSur-Dark from
+# the pre-built release tarball committed to the repo — identical installed
+# output, zero compilation toolchain.
+#
+# Tarball contents: gtk-2.0/, gtk-3.0/, gtk-4.0/, xfwm4/, cinnamon/,
+#                   metacity-1/, plank/dock.theme, index.theme
 # ---------------------------------------------------------------------------
 git clone --depth=1 https://github.com/jothi-prasath/WhiteSur-gtk-theme.git \
     "$WORK_DIR/WhiteSur-gtk-theme"
-# --silent-mode: skips setterm/terminal cursor calls that fail in Docker.
-# Omitting -c installs all color variants (Dark + Light) by default.
-TERM=xterm-256color "$WORK_DIR/WhiteSur-gtk-theme/install.sh" --silent-mode -d /usr/share/themes
+
+mkdir -p /usr/share/themes
+
+if [ -f "$WORK_DIR/WhiteSur-gtk-theme/release/WhiteSur-Dark.tar.xz" ]; then
+    tar -xJf "$WORK_DIR/WhiteSur-gtk-theme/release/WhiteSur-Dark.tar.xz" \
+        -C /usr/share/themes/
+else
+    # Fallback: compile from source if the fork ever drops pre-built tarballs.
+    apt-get install -y sassc libglib2.0-dev-bin libxml2-utils
+    TERM=xterm-256color "$WORK_DIR/WhiteSur-gtk-theme/install.sh" \
+        --silent-mode -d /usr/share/themes -n WhiteSur -c dark -o normal
+fi
 
 # ---------------------------------------------------------------------------
 # Icon theme — WhiteSur
+#
+# install.sh is Docker-safe: pure cp + sed colour-inversion + symlinks.
+# No xfconf, no dconf, no setterm calls.
+# v1 lacked libgtk-3-bin so gtk-update-icon-cache never ran, leaving icon
+# caches unbuilt. v2 installs libgtk-3-bin before this step.
+# Produces: /usr/share/icons/WhiteSur/
+#           /usr/share/icons/WhiteSur-dark/   ← used in xsettings
+#           /usr/share/icons/WhiteSur-light/
 # ---------------------------------------------------------------------------
 git clone --depth=1 https://github.com/vinceliuice/WhiteSur-icon-theme.git \
     "$WORK_DIR/WhiteSur-icon-theme"
 "$WORK_DIR/WhiteSur-icon-theme/install.sh" -d /usr/share/icons
 
 # ---------------------------------------------------------------------------
-# Cursor theme — WhiteSur
+# Cursor theme — WhiteSur (direct copy, no install.sh wrapper)
+#
+# install.sh is 29 lines that only do: cp -pr dist/ /usr/share/icons/WhiteSur-cursors
+# v2 replicates that directly and skips cursors_scalable/ (SVG build sources
+# that X11 never reads at runtime — saves ~2 MB per image layer).
 # ---------------------------------------------------------------------------
 git clone --depth=1 https://github.com/vinceliuice/WhiteSur-cursors.git \
     "$WORK_DIR/WhiteSur-cursors"
-( cd "$WORK_DIR/WhiteSur-cursors" && bash install.sh )
+mkdir -p /usr/share/icons/WhiteSur-cursors
+cp -pr "$WORK_DIR/WhiteSur-cursors/dist/cursors"    /usr/share/icons/WhiteSur-cursors/
+cp     "$WORK_DIR/WhiteSur-cursors/dist/index.theme" /usr/share/icons/WhiteSur-cursors/
 
 # ---------------------------------------------------------------------------
-# SmallSur assets — wallpapers and Plank theme
-# The install-debian.sh from this repo is not run; only its bundled assets
-# are used.
+# SmallSur — wallpapers only
+#
+# install-debian.sh is never run: it calls xfconf-query which requires a live
+# DISPLAY + dbus session — fatal at Docker build time. Only wallpaper assets
+# are taken from this repo.
 # ---------------------------------------------------------------------------
 git clone --depth=1 https://github.com/jothi-prasath/SmallSur.git \
     "$WORK_DIR/SmallSur"
@@ -75,15 +104,15 @@ mkdir -p /usr/share/backgrounds/bigsur
 cp -r "$WORK_DIR/SmallSur/wallpaper/"* /usr/share/backgrounds/bigsur/
 cp /usr/share/backgrounds/bigsur/monterey.png /usr/share/backgrounds/bg_default.png
 
-mkdir -p /usr/share/plank/themes
-cp -rp "$WORK_DIR/SmallSur/plank/mcOS-BS-iMacM1-Black" /usr/share/plank/themes/
-if [ -d "$WORK_DIR/WhiteSur-gtk-theme/src/other/plank" ]; then
-    cp -rp "$WORK_DIR/WhiteSur-gtk-theme/src/other/plank/"* /usr/share/plank/themes/
-fi
-
-# VNC compositing cannot render the semi-transparent dock shelf from
-# mcOS-BS-iMacM1-Black — it falls back to a solid grey bar. Override with a
-# fully-transparent background so only the icons are visible (floating dock).
+# ---------------------------------------------------------------------------
+# Plank dock theme (written directly — no upstream file dependency)
+#
+# v1 copied mcOS-BS-iMacM1-Black from SmallSur then immediately overwrote its
+# dock.theme. v2 writes the authoritative definition directly, skipping the
+# redundant copy. Fully-transparent fill so icons float with no shelf visible —
+# VNC compositing cannot render semi-transparent fills from the upstream theme.
+# ---------------------------------------------------------------------------
+mkdir -p /usr/share/plank/themes/mcOS-BS-iMacM1-Black
 cat > /usr/share/plank/themes/mcOS-BS-iMacM1-Black/dock.theme << 'EOF'
 [PlankTheme]
 TopRoundness=6
@@ -96,7 +125,7 @@ InnerStrokeColor=0;;0;;0;;0
 EOF
 
 # ---------------------------------------------------------------------------
-# Plank autostart
+# Plank autostart + dock preferences
 # ---------------------------------------------------------------------------
 mkdir -p /etc/xdg/autostart
 cat > /etc/xdg/autostart/plank.desktop << 'EOF'
@@ -125,13 +154,15 @@ ZoomPercent=120
 EOF
 
 # ---------------------------------------------------------------------------
-# GTK2/3 theme pointers in the default profile home
-# Belt-and-suspenders for apps that read these files directly rather than
-# going through xsettings.
+# GTK2/GTK3 fallback settings in the default profile home
+#
+# Belt-and-suspenders for apps that bypass xsettings and read these files
+# directly. Icon theme uses WhiteSur-dark (lowercase) to match the exact
+# directory name produced by WhiteSur-icon-theme/install.sh.
 # ---------------------------------------------------------------------------
 cat > "$HOME/.gtkrc-2.0" << 'EOF'
 gtk-theme-name="WhiteSur-Dark"
-gtk-icon-theme-name="WhiteSur-Dark"
+gtk-icon-theme-name="WhiteSur-dark"
 gtk-cursor-theme-name="WhiteSur-cursors"
 gtk-font-name="Sans 10"
 EOF
@@ -140,7 +171,7 @@ mkdir -p "$HOME/.config/gtk-3.0"
 cat > "$HOME/.config/gtk-3.0/settings.ini" << 'EOF'
 [Settings]
 gtk-theme-name=WhiteSur-Dark
-gtk-icon-theme-name=WhiteSur-Dark
+gtk-icon-theme-name=WhiteSur-dark
 gtk-cursor-theme-name=WhiteSur-cursors
 gtk-font-name=Sans 10
 EOF
@@ -148,7 +179,7 @@ EOF
 # ---------------------------------------------------------------------------
 # GTK appmenu module
 # Exports running app menus over DBus so xfce4-appmenu-plugin can display
-# them in the panel. Loaded by setting GTK_MODULES at session start.
+# them in the panel. Loaded at X session start.
 # ---------------------------------------------------------------------------
 mkdir -p /etc/X11/Xsession.d
 cat > /etc/X11/Xsession.d/81appmenu << 'EOF'
@@ -169,4 +200,4 @@ if [ -z "${SKIP_CLEAN+x}" ]; then
     rm -rf /var/lib/apt/lists/* /var/tmp/* /tmp/*
 fi
 
-echo "Big Sur theme installation complete"
+echo "Big Sur theme v2 installation complete"

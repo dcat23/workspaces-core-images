@@ -48,7 +48,7 @@ RUN bash $INST_SCRIPTS/fonts/install_custom_fonts.sh && rm -rf $INST_SCRIPTS/fon
 ### Install xfce UI
 COPY ./src/ubuntu/install/xfce $INST_SCRIPTS/xfce/
 RUN bash $INST_SCRIPTS/xfce/install_xfce_ui.sh && rm -rf $INST_SCRIPTS/xfce/
-ADD ./src/ubuntu/xfce-macchiato/.config/ $HOME/.config/
+ADD ./src/ubuntu/xfce-macchiato-v2/.config/ $HOME/.config/
 RUN mkdir -p /usr/share/extra/backgrounds/
 RUN mkdir -p /usr/share/extra/icons/
 ADD /src/common/resources/images/bg_kasm.png  /usr/share/backgrounds/bg_kasm.png
@@ -144,7 +144,7 @@ RUN bash $INST_SCRIPTS/emblems/install_emblems.sh && rm -rf $INST_SCRIPTS/emblem
 
 ### Big Sur theme — WhiteSur GTK/icon/cursor, wallpapers, Plank dock
 COPY ./src/ubuntu/install/big_sur_theme $INST_SCRIPTS/big_sur_theme/
-RUN bash $INST_SCRIPTS/big_sur_theme/install_big_sur_theme.sh && rm -rf $INST_SCRIPTS/big_sur_theme/
+RUN bash $INST_SCRIPTS/big_sur_theme/install_big_sur_theme_v2.sh && rm -rf $INST_SCRIPTS/big_sur_theme/
 
 ### Nemo file manager (replaces Thunar)
 COPY ./src/ubuntu/install/nemo $INST_SCRIPTS/nemo/

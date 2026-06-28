@@ -12,11 +12,11 @@ This is a Kasm core image built on `ubuntu:24.04` that bakes the WhiteSur/Big Su
 
 | Component | Source | Details |
 |---|---|---|
-| **GTK theme** | [WhiteSur-gtk-theme](https://github.com/jothi-prasath/WhiteSur-gtk-theme) | Dark + Light variants installed system-wide |
-| **Icon theme** | [WhiteSur-icon-theme](https://github.com/vinceliuice/WhiteSur-icon-theme) | WhiteSur, WhiteSur-light, WhiteSur-dark |
-| **Cursor theme** | [WhiteSur-cursors](https://github.com/vinceliuice/WhiteSur-cursors) | WhiteSur-cursors |
+| **GTK theme** | [WhiteSur-gtk-theme](https://github.com/jothi-prasath/WhiteSur-gtk-theme) | Dark variant only; extracted from pre-built release tarball (no SCSS compilation at build time) |
+| **Icon theme** | [WhiteSur-icon-theme](https://github.com/vinceliuice/WhiteSur-icon-theme) | WhiteSur, WhiteSur-dark, WhiteSur-light — icon caches built via `gtk-update-icon-cache` |
+| **Cursor theme** | [WhiteSur-cursors](https://github.com/vinceliuice/WhiteSur-cursors) | WhiteSur-cursors; pre-compiled XCursor binaries copied directly from `dist/` |
 | **Window decorations** | WhiteSur-gtk-theme (xfwm4) | WhiteSur-Dark — traffic-light buttons on the left (`CHM\|O`) |
-| **Dock** | [Plank](https://launchpad.net/plank) | Themed with `mcOS-BS-iMacM1-Black`; always visible; autostarts with session |
+| **Dock** | [Plank](https://launchpad.net/plank) | Themed with `mcOS-BS-iMacM1-Black` (transparent fill for VNC); always visible; autostarts with session |
 | **Wallpapers** | [SmallSur](https://github.com/jothi-prasath/SmallSur) | 5 wallpapers in `/usr/share/backgrounds/bigsur/` |
 | **File manager** | [Nemo](https://github.com/linuxmint/nemo) | Replaces Thunar; includes `nemo-fileroller` archive integration |
 | **Terminal emulator** | [Kitty](https://sw.kovidgoyal.net/kitty/) | Default terminal; registered via `exo-open` and `update-alternatives` |
@@ -26,14 +26,14 @@ This is a Kasm core image built on `ubuntu:24.04` that bakes the WhiteSur/Big Su
 | Setting | Value |
 |---|---|
 | GTK theme | WhiteSur-Dark |
-| Icon theme | WhiteSur-Dark |
+| Icon theme | WhiteSur-dark |
 | Cursor theme | WhiteSur-cursors |
 | Window manager theme | WhiteSur-Dark |
 | Window button layout | `CHM\|O` — Close/Hide/Maximize on the left, app icon on the right |
 | Compositing | Enabled (`use_compositing=true`, `sync_to_vblank=false`) |
 | Default wallpaper | `monterey.png` |
 | Plank dock visibility | Always visible (`HideMode=0`) |
-| Plank theme | mcOS-BS-iMacM1-Black |
+| Plank theme | mcOS-BS-iMacM1-Black (transparent fill — floating icons) |
 | Panel background | `rgba(0, 0, 0, 0.30)` — 30% black tint |
 | Default file manager | Nemo |
 | Default terminal | Kitty (shell: `/bin/bash`) |
@@ -99,8 +99,8 @@ Access via browser at `https://<host>:6901` — user: `kasm_user`, password: `pa
 |---|---|
 | **Base image** | `ubuntu:24.04` |
 | **Dockerfile** | `dockerfile-macchiato-core-noble` |
-| **XFCE config** | `src/ubuntu/xfce-macchiato/.config/` |
-| **Install scripts** | `src/ubuntu/install/big_sur_theme/install_big_sur_theme.sh` |
+| **XFCE config** | `src/ubuntu/xfce-macchiato-v2/.config/` |
+| **Install scripts** | `src/ubuntu/install/big_sur_theme/install_big_sur_theme_v2.sh` |
 | | `src/ubuntu/install/nemo/install_nemo.sh` |
 | | `src/ubuntu/install/kitty/install_kitty.sh` |
 | **Type** | Core (base image for downstream workspaces) |
@@ -129,7 +129,7 @@ USER 1000
 
 ### Adjust panel transparency
 
-Edit `background-rgba` in `src/ubuntu/xfce-macchiato/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml`:
+Edit `background-rgba` in `src/ubuntu/xfce-macchiato-v2/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml`:
 
 ```xml
 <value type="double" value="0.300000"/>  <!-- fourth value: 0.0 = transparent, 1.0 = opaque -->
