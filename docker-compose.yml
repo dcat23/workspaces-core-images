@@ -1,5 +1,5 @@
 services:
-    macchiato-core-noble:
+    noble:
         build:
             context: .
             dockerfile: dockerfile-macchiato-core-noble
