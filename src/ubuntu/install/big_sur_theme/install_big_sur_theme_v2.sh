@@ -18,12 +18,15 @@ apt-get install -y \
     xfce4-pulseaudio-plugin \
     xfce4-notifyd \
     xfce4-appmenu-plugin \
+    xfce4-whiskermenu-plugin \
     appmenu-gtk2-module \
     appmenu-gtk3-module \
     appmenu-registrar \
     gtk2-engines-murrine \
     gtk2-engines-pixbuf \
     libgtk-3-bin \
+    pavucontrol \
+    fonts-cantarell \
     git \
     plank
 
@@ -115,13 +118,19 @@ cp /usr/share/backgrounds/bigsur/monterey.png /usr/share/backgrounds/bg_default.
 mkdir -p /usr/share/plank/themes/mcOS-BS-iMacM1-Black
 cat > /usr/share/plank/themes/mcOS-BS-iMacM1-Black/dock.theme << 'EOF'
 [PlankTheme]
-TopRoundness=6
-BottomRoundness=6
+TopRoundness=0
+BottomRoundness=0
 LineWidth=0
 OuterStrokeColor=0;;0;;0;;0
 FillStartColor=0;;0;;0;;0
 FillEndColor=0;;0;;0;;0
 InnerStrokeColor=0;;0;;0;;0
+HorizPadding=0.0
+TopPadding=0.0
+BottomPadding=0.0
+ItemPadding=2.0
+IndicatorSize=0.0
+BadgeColor=0;;0;;0;;0
 EOF
 
 # ---------------------------------------------------------------------------
@@ -147,10 +156,32 @@ CurrentWorkspaceOnly=false
 IconSize=48
 HideMode=0
 UnhideDelay=0
+Offset=10
 Theme=mcOS-BS-iMacM1-Black
 Alignment=3
 LockItems=false
+ZoomEnabled=true
 ZoomPercent=120
+EOF
+
+# ---------------------------------------------------------------------------
+# Plank default launcher items
+#
+# Each .dockitem file maps to one launcher in the dock. Plank resolves them
+# at runtime, so the pointed-to .desktop files do not need to exist at this
+# build step (nemo and kitty are installed in subsequent Dockerfile layers).
+# Filenames are sorted alphabetically by Plank — nemo (n) < terminal (t)
+# places the file manager left of the terminal, matching macOS dock convention.
+# ---------------------------------------------------------------------------
+mkdir -p "$HOME/.config/plank/dock1/launchers"
+cat > "$HOME/.config/plank/dock1/launchers/nemo.dockitem" << 'EOF'
+[PlankDockItemPreferences]
+Launcher=file:///usr/share/applications/nemo.desktop
+EOF
+
+cat > "$HOME/.config/plank/dock1/launchers/terminal.dockitem" << 'EOF'
+[PlankDockItemPreferences]
+Launcher=file:///usr/share/applications/kitty.desktop
 EOF
 
 # ---------------------------------------------------------------------------
@@ -164,7 +195,7 @@ cat > "$HOME/.gtkrc-2.0" << 'EOF'
 gtk-theme-name="WhiteSur-Dark"
 gtk-icon-theme-name="WhiteSur-dark"
 gtk-cursor-theme-name="WhiteSur-cursors"
-gtk-font-name="Sans 10"
+gtk-font-name="Cantarell 10"
 EOF
 
 mkdir -p "$HOME/.config/gtk-3.0"
@@ -173,13 +204,11 @@ cat > "$HOME/.config/gtk-3.0/settings.ini" << 'EOF'
 gtk-theme-name=WhiteSur-Dark
 gtk-icon-theme-name=WhiteSur-dark
 gtk-cursor-theme-name=WhiteSur-cursors
-gtk-font-name=Sans 10
+gtk-font-name=Cantarell 10
 EOF
 
 # ---------------------------------------------------------------------------
 # GTK appmenu module
-# Exports running app menus over DBus so xfce4-appmenu-plugin can display
-# them in the panel. Loaded at X session start.
 # ---------------------------------------------------------------------------
 mkdir -p /etc/X11/Xsession.d
 cat > /etc/X11/Xsession.d/81appmenu << 'EOF'
